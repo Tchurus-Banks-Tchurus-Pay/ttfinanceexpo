@@ -3,6 +3,9 @@
     "name": "financeexpo",
     "slug": "financeexpo",
     "version": "1.0.0",
+    "plugins": [
+      "@react-native-firebase/app"
+    ],
     "scripts": {
       "start": "expo start",
       "android": "expo start --android",
@@ -28,13 +31,20 @@
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.tt.financeapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ffd3a61b-edd8-43b8-bd3c-1303402acb8c"
+      }
     }
   }
 }
