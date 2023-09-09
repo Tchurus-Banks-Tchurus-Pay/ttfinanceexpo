@@ -2,6 +2,7 @@ import { NavigationProp } from "@react-navigation/native";
 import { injectable } from "inversify";
 import React from "react";
 import { CurrencyController } from "../constants/CurrencyController";
+import { Initialization } from "../constants/Initialization";
 import { supabase } from "../constants/Supabase";
 import { UserSession } from "../constants/UserSession";
 
@@ -12,21 +13,27 @@ export class HomeViewController {
   navigation: NavigationProp<any> | undefined;
 
   //NOVOS
-  graphValues: number[] = [];
+  graphValues: number[] = [1, 2];
   sliceColors: string[] = [];
   totalValue: number = 0;
   portifolio: { code: string; amount: string }[] = [];
 
-  register(
+  async register(
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     navigation: NavigationProp<any>
   ) {
     this.navigation = navigation;
     this.loading = setLoading;
+    await Initialization.init();
   }
 
-  async getPortfolio() {
+  async getPortfolio(): Promise<void> {
+    console.log("getPortfoliaaaaaaaaaaaaao");
     this.loading(true);
+    await UserSession.updateUserPortfolio();
+    const totalValue2 =
+      UserSession.getLoggedUser()?.getPortifolioTotalValueIn("USD");
+    console.log(totalValue2);
     let { data, error, status } = await supabase
       .from("user_portfolio")
       .select(`*`)
@@ -41,6 +48,7 @@ export class HomeViewController {
       var totalValue: number = 0;
       this.portifolio = [];
       for (let i = 0; i < data.length; i++) {
+        console.log(data[i].currency_code);
         const convertedValue = CurrencyController.convertCurrency(
           data[i].currency_code,
           "USD",
@@ -53,6 +61,7 @@ export class HomeViewController {
           amount: data[i].amount,
         });
       }
+
       this.totalValue = totalValue;
       this.graphValues = values;
       this.getRandomColors(this.graphValues.length);

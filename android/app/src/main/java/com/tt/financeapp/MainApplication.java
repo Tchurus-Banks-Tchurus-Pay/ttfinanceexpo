@@ -18,6 +18,7 @@ import java.util.List;
 
 import expo.modules.ApplicationLifecycleDispatcher;
 import expo.modules.ReactNativeHostWrapper;
+import io.invertase.firebase.messaging.ReactNativeFirebaseMessagingPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 

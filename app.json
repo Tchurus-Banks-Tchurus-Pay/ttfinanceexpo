@@ -13,9 +13,6 @@
       "web": "expo start --web",
       "test": "jest --watchAll"
     },
-    "jest": {
-      "preset": "jest-expo"
-    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

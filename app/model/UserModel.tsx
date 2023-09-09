@@ -1,3 +1,4 @@
+import { CurrencyController } from "../constants/CurrencyController";
 import { supabase } from "../constants/Supabase";
 
 export class UserModel {
@@ -6,6 +7,7 @@ export class UserModel {
   username: string;
   avatar: string;
   mainCurrency: string;
+  portifolio: { code: string; amount: string }[] = [];
 
   constructor(data: Partial<UserModel> = {}) {
     this.id = data.id || "";
@@ -13,6 +15,7 @@ export class UserModel {
     this.username = data.username || "";
     this.avatar = data.avatar || "";
     this.mainCurrency = data.mainCurrency || "";
+    this.portifolio = data.portifolio || [];
   }
 
   static async getUserById(id: string): Promise<UserModel> {
@@ -33,5 +36,60 @@ export class UserModel {
       username: data?.username,
       mainCurrency: data?.main_currency_code,
     });
+  }
+
+  async updatePortfolio(): Promise<void> {
+    let { data, error, status } = await supabase
+      .from("user_portfolio")
+      .select(`*`)
+      .eq("user_id", this.id);
+
+    if (error && status !== 406) {
+      throw error;
+    }
+
+    if (data) {
+      this.portifolio = [];
+      for (let i = 0; i < data.length; i++) {
+        this.portifolio.push({
+          code: data[i].currency_code,
+          amount: data[i].amount,
+        });
+      }
+    }
+  }
+
+  getPortifolioTotalValueIn(currencyCode: string): number {
+    let totalValue = 0;
+    this.portifolio.forEach((item) => {
+      totalValue += Number(
+        CurrencyController.convertCurrency(item.code, currencyCode, item.amount)
+      );
+    });
+    return totalValue;
+  }
+
+  async verifyIfUserHasThisAmountInThis(
+    amount: string,
+    currencyCode: string
+  ): Promise<boolean> {
+    await this.updatePortfolio();
+    let hasThisAmount = false;
+    this.portifolio.forEach((item) => {
+      if (item.code === currencyCode && Number(item.amount) >= Number(amount)) {
+        hasThisAmount = true;
+      }
+    });
+    return hasThisAmount;
+  }
+
+  getBalanceIn(currencyCode: string): string {
+    let balance = 0;
+    this.portifolio.forEach((item) => {
+      if (item.code === currencyCode) {
+        balance = Number(item.amount);
+      }
+    });
+    return balance.toFixed(2);
   }
 }
