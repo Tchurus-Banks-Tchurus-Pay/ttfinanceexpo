@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "556859594110",
+    "project_id": "tchurubanks",
+    "storage_bucket": "tchurubanks.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556859594110:android:735d90fbb6d60e263bcf2f",
+        "android_client_info": {
+          "package_name": "com.tt.financeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzNMn6Lso8EK_IALns0y-PtBsMcoC5aUQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

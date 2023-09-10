@@ -9,10 +9,22 @@ export class UserSession {
     return this.session;
   }
 
+  public static getLoggedUser(): UserModel | null {
+    return this.loggedUser;
+  }
+
   static async setSession(session: Session | null) {
     this.session = session;
     if (session) {
       this.loggedUser = await UserModel.getUserById(session.user?.id);
+    }
+  }
+
+  static async updateUserPortfolio() {
+    await this.setSession(this.session);
+    console.log(this.loggedUser);
+    if (this.loggedUser != null) {
+      await this.loggedUser.updatePortfolio();
     }
   }
 }

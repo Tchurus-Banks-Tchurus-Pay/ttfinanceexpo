@@ -5,6 +5,7 @@ import { Text, View } from "react-native";
 import { tabBarHeight } from "../constants/Constants";
 import ExchangeView from "./ExchangeView";
 import HomeView from "./HomeView";
+import TransactionsView from "./TransactionsView";
 
 function Profile() {
   return (
@@ -73,7 +74,7 @@ export default function RootView() {
       />
       <Tab.Screen
         name="Transactions"
-        component={Profile}
+        component={TransactionsView}
         options={{
           tabBarLabel: "Transactions",
           tabBarIcon: ({ color, size }) => (

@@ -15,16 +15,18 @@ interface Props {
   isPassword?: boolean;
   style?: TextStyle;
   containerStyle?: ViewStyle;
-  keyboardType?: "default" | "numeric"; // Adicionando a propriedade keyboardType
+  keyboardType?: "default" | "numeric";
+  value?: string;
 }
 
 const PrimaryTextField: React.FC<Props> = ({
   placeholder,
   onChangeText,
+  value,
   isPassword = false,
   style = {},
   containerStyle = {},
-  keyboardType = "default", // Definindo o valor padrão para 'default'
+  keyboardType = "default",
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -33,9 +35,8 @@ const PrimaryTextField: React.FC<Props> = ({
   };
 
   const handleTextChange = (text: string) => {
-    // Adicionando validação para números decimais
     if (keyboardType === "numeric") {
-      const regex = /^\d*\.?\d*$/; // Permite números e ponto decimal
+      const regex = /^\d*\.?\d*$/;
       if (regex.test(text)) {
         onChangeText(text);
       }
@@ -47,10 +48,11 @@ const PrimaryTextField: React.FC<Props> = ({
   return (
     <View style={[styles.inputContainer, containerStyle]}>
       <TextInput
+        value={value}
         style={[styles.input, style, isPassword && { paddingRight: 40 }]}
         placeholder={placeholder}
         placeholderTextColor="#727272"
-        onChangeText={handleTextChange} // Usando a função com validação
+        onChangeText={handleTextChange}
         secureTextEntry={isPassword ? !showPassword : false}
         underlineColorAndroid="transparent"
         cursorColor={"#fff"}

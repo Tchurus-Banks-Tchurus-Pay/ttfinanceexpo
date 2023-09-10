@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import PieChart from "react-native-pie-chart";
 import MyCurrencyContainer from "../components/MyCurrencyContainer";
+import { CallbackTrigger } from "../constants/CallbackTrigger";
 import colors from "../constants/Colors";
 import { tabBarHeight } from "../constants/Constants";
 import { CurrencyController } from "../constants/CurrencyController";
@@ -24,13 +25,21 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const controller = container.get(HomeViewController);
   controller.register(setLoading, navigation);
-
   const widthAndHeight = 230;
+
+  const updatePortfolio = async () => {
+    await CurrencyController.initCurrencies();
+    await controller.getPortfolio();
+  };
+
+  CallbackTrigger.addCallback("update-home-view", updatePortfolio);
 
   React.useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       await CurrencyController.initCurrencies();
       await controller.getPortfolio();
+      setLoading(false);
     };
 
     fetchData();
@@ -49,7 +58,7 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
         </View>
       </View>
       <View style={[styles.topContainer, { backgroundColor: "#2b2c3e" }]}>
-        {loading == false ? (
+        {loading == false || controller.graphValues.length == 0 ? (
           <View>
             <PieChart
               widthAndHeight={widthAndHeight}

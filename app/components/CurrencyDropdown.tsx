@@ -8,18 +8,18 @@ import {
 } from "../constants/CurrencyController";
 
 interface DropDownProps {
-  selectedCurrency: CurrencyModel;
+  selectedCurrency: CurrencyModel | undefined;
   onCurrencyChange: (currency: CurrencyModel) => void;
   labelText: string;
+  currencies?: CurrencyModel[]; // Tornar currencies opcional
 }
 
 const DropDown: React.FC<DropDownProps> = ({
   selectedCurrency,
   onCurrencyChange,
   labelText,
+  currencies = CurrencyController.currencies, // Valor padrão
 }) => {
-  const currencies = CurrencyController.currencies;
-
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{labelText}</Text>

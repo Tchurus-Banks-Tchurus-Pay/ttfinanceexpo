@@ -12,6 +12,18 @@ import LoginView from "./app/views/LoginView";
 import RegisterView from "./app/views/RegisterView";
 import RootView from "./app/views/RootView";
 
+/* const firebaseConfig = {
+  apiKey: "AIzaSyCyBb4roWgWAIgc2FnUBywifh4mxlRgBNg",
+  authDomain: "tchurubanks.firebaseapp.com",
+  projectId: "tchurubanks",
+  storageBucket: "tchurubanks.appspot.com",
+  messagingSenderId: "556859594110",
+  appId: "1:556859594110:web:a88be1d0269af2283bcf2f",
+  measurementId: "G-3XJ1FH688Y",
+};
+
+const app = initializeApp(firebaseConfig);
+ */
 const Stack = createStackNavigator();
 
 export default function App() {
