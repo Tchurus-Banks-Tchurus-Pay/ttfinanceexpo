@@ -2,6 +2,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import * as React from "react";
 import { Text, View } from "react-native";
+import { CallbackTrigger } from "../constants/CallbackTrigger";
 import { tabBarHeight } from "../constants/Constants";
 import ExchangeView from "./ExchangeView";
 import { HomeViewStack } from "./HomeView";
@@ -23,7 +24,6 @@ export default function RootView() {
       initialRouteName="Feed"
       screenOptions={{
         tabBarHideOnKeyboard: true,
-
         tabBarActiveTintColor: "#ffffff",
         headerShown: false,
         tabBarStyle: {
@@ -42,10 +42,16 @@ export default function RootView() {
         component={HomeViewStack}
         options={{
           tabBarLabel: "Home",
-
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            console.log("tabPress");
+            console.log(e);
+            CallbackTrigger.triggerCallback("update-home-view");
+          },
         }}
       />
       <Tab.Screen
@@ -75,6 +81,14 @@ export default function RootView() {
       <Tab.Screen
         name="Transactions"
         component={TransactionsView}
+        listeners={{
+          tabPress: (e) => {
+            console.log("tabPress");
+            console.log(e);
+            CallbackTrigger.triggerCallback("get-portfolio");
+            CallbackTrigger.triggerCallback("get-transactions");
+          },
+        }}
         options={{
           tabBarLabel: "Transactions",
           tabBarIcon: ({ color, size }) => (

@@ -11,17 +11,18 @@ import {
 } from "react-native";
 import PieChart from "react-native-pie-chart";
 import MyCurrencyContainer from "../components/MyCurrencyContainer";
+import PrimaryLoader from "../components/PrimaryLoader";
 import { CallbackTrigger } from "../constants/CallbackTrigger";
 import colors from "../constants/Colors";
 import { tabBarHeight } from "../constants/Constants";
 import { CurrencyController } from "../constants/CurrencyController";
 import container from "../constants/Inversify";
 import { UIScale } from "../constants/UIScale";
+import { UserSession } from "../constants/UserSession";
 import { HomeViewController } from "../controllers/HomeViewController";
 import SettingsView from "./SettingsView";
 
 const Stack = createStackNavigator();
-
 
 interface Props {
   navigation: NavigationProp<any>;
@@ -40,10 +41,9 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
 
   CallbackTrigger.addCallback("update-home-view", updatePortfolio);
 
-
-const goToSettings = () => {
-  navigation.navigate("settings");
-}
+  const goToSettings = () => {
+    navigation.navigate("settings");
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -55,8 +55,6 @@ const goToSettings = () => {
 
     fetchData();
   }, []);
-
-  
 
   return (
     <View style={styles.container}>
@@ -85,11 +83,13 @@ const goToSettings = () => {
               <Text style={styles.totalValue}>
                 {controller.totalValue.toFixed(2)}
               </Text>
-              <Text style={styles.currencyCode}> USD</Text>
+              <Text style={styles.currencyCode}>
+                {UserSession.loggedUser?.mainCurrency}
+              </Text>
             </View>
           </View>
         ) : (
-          <Text>Carregando...</Text>
+          <PrimaryLoader />
         )}
       </View>
       {loading == false ? (

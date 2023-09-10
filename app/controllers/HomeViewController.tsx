@@ -32,12 +32,12 @@ export class HomeViewController {
     this.loading(true);
     await UserSession.updateUserPortfolio();
     const totalValue2 =
-      UserSession.getLoggedUser()?.getPortifolioTotalValueIn("USD");
+      UserSession.loggedUser?.getPortifolioTotalValueInMainCurrency();
     console.log(totalValue2);
     let { data, error, status } = await supabase
       .from("user_portfolio")
       .select(`*`)
-      .eq("user_id", UserSession.getSession()?.user?.id);
+      .eq("user_id", UserSession.session!.user?.id);
 
     if (error && status !== 406) {
       throw error;
@@ -51,7 +51,7 @@ export class HomeViewController {
         console.log(data[i].currency_code);
         const convertedValue = CurrencyController.convertCurrency(
           data[i].currency_code,
-          "USD",
+          UserSession.loggedUser?.mainCurrency!,
           data[i].amount
         );
         values.push(Number(convertedValue));

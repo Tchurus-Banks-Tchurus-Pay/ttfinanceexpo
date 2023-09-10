@@ -1,3 +1,4 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -22,14 +23,19 @@ const PrimaryHeader: React.FC<Props> = ({ title, hasBackButton = false }) => {
         { backgroundColor: "#2b2c3e", marginTop: UIScale.insets.top },
       ]}
     >
-      <View style={styles.headerLeft}>
-        {hasBackButton && (
-          <TouchableOpacity onPress={handleBackButtonPress}>
-            <Text style={styles.backButtonText}>Voltar</Text>
-          </TouchableOpacity>
-        )}
-        <Text style={styles.headerText}>{title}</Text>
-      </View>
+      {hasBackButton ? (
+        <TouchableOpacity onPress={handleBackButtonPress}>
+          <MaterialCommunityIcons name="arrow-left" color={"#fff"} size={28} />
+        </TouchableOpacity>
+      ) : (
+        <View style={styles.headerLeftEmpty}></View>
+      )}
+
+      <Text
+        style={hasBackButton ? styles.headerTextWithBack : styles.headerText}
+      >
+        {title}
+      </Text>
     </View>
   );
 };
@@ -37,21 +43,26 @@ const PrimaryHeader: React.FC<Props> = ({ title, hasBackButton = false }) => {
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
+    justifyContent: "space-between",
     marginTop: 25,
   },
   headerText: {
     fontSize: 36,
     fontFamily: "Poppins",
     color: "#fff",
-  },
-  headerLeft: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
+    textAlign: "left",
   },
+  headerTextWithBack: {
+    fontSize: 36,
+    fontFamily: "Poppins",
+    color: "#fff",
+    flex: 1,
+    textAlign: "right",
+  },
+  headerLeftEmpty: {},
   backButtonText: {
     fontSize: 16,
     fontFamily: "Poppins",

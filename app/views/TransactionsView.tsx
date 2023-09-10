@@ -1,11 +1,16 @@
 import { NavigationProp } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import DropDown from "../components/CurrencyDropdown";
 import PrimaryButton from "../components/PrimaryButton";
+import PrimaryHeader from "../components/PrimaryHeader";
 import PrimaryTextField from "../components/PrimaryTextField";
+import TransactionContainer, {
+  TransactionContainerProps,
+} from "../components/TransactionContainer";
 import { CallbackTrigger } from "../constants/CallbackTrigger";
 import colors from "../constants/Colors";
+import { tabBarHeight } from "../constants/Constants";
 import {
   CurrencyController,
   CurrencyModel,
@@ -21,19 +26,22 @@ interface Props {
 const TransactionsView: React.FC<Props> = ({ navigation }) => {
   const [moneyToSend, setMoneyToSend] = useState<string>("");
   const [usernameToSend, setUsernameToSend] = useState<string>("");
-  const [convertedValue, setConvertedValue] = useState<string>("");
   const [balance, setBalance] = useState<string>("");
+  const [transactions, setTransactions] = useState<TransactionContainerProps[]>(
+    []
+  );
   const [myCurrencies, setMyCurrencies] = useState<CurrencyModel[]>([]);
   const [selectedCurrencyFrom, setSelectedCurrencyFrom] =
     useState<CurrencyModel>();
 
   React.useEffect(() => {
     getMyPortfolioCurrencies();
+    getRelatedTransactions();
   }, []);
 
   const handleCurrencyChangeFrom = (currency: CurrencyModel) => {
     setSelectedCurrencyFrom(currency);
-    setBalance(UserSession.getLoggedUser()?.getBalanceIn(currency.code)!);
+    setBalance(UserSession.loggedUser?.getBalanceIn(currency.code)!);
     console.log(currency);
   };
 
@@ -43,23 +51,48 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
     console.log("getMyPortfolioCurrencies");
 
     const currencies: CurrencyModel[] = [];
-    for (let i = 0; i < UserSession.getLoggedUser()?.portifolio.length!; i++) {
-      if (UserSession.getLoggedUser()?.portifolio[i].amount != "0") {
+    for (let i = 0; i < UserSession.loggedUser?.portifolio.length!; i++) {
+      if (UserSession.loggedUser?.portifolio[i].amount != "0") {
         currencies.push(
           CurrencyController.getCurrencyByCode(
-            UserSession.getLoggedUser()?.portifolio[i].code!
+            UserSession.loggedUser?.portifolio[i].code!
           )!
         );
       }
     }
     setMyCurrencies(currencies);
     setSelectedCurrencyFrom(currencies[0]);
-    setBalance(UserSession.getLoggedUser()?.getBalanceIn(currencies[0].code)!);
+    setBalance(UserSession.loggedUser?.getBalanceIn(currencies[0].code)!);
     setMoneyToSend("");
     setUsernameToSend("");
   };
 
+  const getRelatedTransactions = async () => {
+    console.log("getRelatedTransactions");
+    const userId = UserSession.loggedUser?.id;
+    let { data, error } = await supabase.rpc("get_transactions_info", {
+      user_id: userId,
+    });
+
+    if (error) {
+      console.log(error);
+    } else {
+      const transactions: TransactionContainerProps[] = [];
+      for (let i = 0; i < data!.length; i++) {
+        transactions.push({
+          currencyCode: data![i].currency_code,
+          personInteractionName: data![i].username,
+          wasSended: data![i].sent_by_me,
+          amount: data![i].value,
+        });
+      }
+      const reversed = transactions.reverse();
+      setTransactions(reversed);
+    }
+  };
+
   CallbackTrigger.addCallback("get-portfolio", getMyPortfolioCurrencies);
+  CallbackTrigger.addCallback("get-transactions", getRelatedTransactions);
 
   const handleMoneyChange = (text: string) => {
     setMoneyToSend(text);
@@ -71,21 +104,21 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
 
   const sendMoney = async () => {
     const hasMoney =
-      await UserSession.getLoggedUser()?.verifyIfUserHasThisAmountInThis(
+      await UserSession.loggedUser?.verifyIfUserHasThisAmountInThis(
         moneyToSend,
         selectedCurrencyFrom?.code!
       );
 
     if (hasMoney) {
       console.log("Tem dinheiro");
-      console.log(UserSession.getLoggedUser()?.username);
+      console.log(UserSession.loggedUser?.username);
       console.log(usernameToSend);
       console.log(selectedCurrencyFrom?.code);
       console.log(moneyToSend);
 
       let { data, error } = await supabase.rpc("transfer_transaction", {
         transfer_currency_code: selectedCurrencyFrom?.code,
-        username_from: UserSession.getLoggedUser()?.username,
+        username_from: UserSession.loggedUser?.username,
         username_to: usernameToSend,
         transfer_value: moneyToSend,
       });
@@ -96,20 +129,20 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
         Alert.alert("Transferência realizada com sucesso!");
         await PushNotificationsHandler.sendPushNotification(
           usernameToSend,
-          "Você recebeu uma quantia de " +
-            UserSession.getLoggedUser()?.username!,
+          "Você recebeu uma quantia de " + UserSession.loggedUser?.username!,
           "Você acabou de receber " +
             moneyToSend +
             " " +
             selectedCurrencyFrom?.code +
             " de " +
-            UserSession.getLoggedUser()?.username! +
+            UserSession.loggedUser?.username! +
             "!"
         );
         CallbackTrigger.triggerAll();
       }
       setMoneyToSend("");
       setUsernameToSend("");
+      getRelatedTransactions();
     } else {
       Alert.alert("Usuário não possui essa quantia nessa moeda! Pobre!");
       setMoneyToSend("");
@@ -119,65 +152,83 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { backgroundColor: "#2b2c3e" }]}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.headerText}>Movimentações</Text>
-        </View>
-      </View>
-      <View style={styles.contentContainer}>
-        <View
-          style={[
-            styles.topContainer,
-            { backgroundColor: "#2b2c3e", flex: 0.6 },
-          ]}
-        >
-          <Text style={styles.convertedValueText}>Enviar para:</Text>
-          <PrimaryTextField
-            placeholder="Digite o usuário:"
-            onChangeText={handleUsernameChange}
-            style={styles.inputField}
-            value={usernameToSend}
+      <PrimaryHeader title="Movimentações" />
+
+      <ScrollView
+        style={{
+          height: 260,
+          backgroundColor: "#2b2c3e",
+        }}
+        contentContainerStyle={{
+          alignItems: "center",
+          justifyContent: "space-around",
+          flex: 1,
+        }}
+      >
+        <Text style={styles.convertedValueText}>Enviar para:</Text>
+        <PrimaryTextField
+          placeholder="Digite o usuário:"
+          onChangeText={handleUsernameChange}
+          style={styles.inputField}
+          containerStyle={{ width: 350 }}
+          value={usernameToSend}
+        />
+        {selectedCurrencyFrom !== undefined ? (
+          <DropDown
+            selectedCurrency={selectedCurrencyFrom}
+            onCurrencyChange={handleCurrencyChangeFrom}
+            labelText="Selecione a moeda:"
+            currencies={myCurrencies}
           />
-          {selectedCurrencyFrom !== undefined ? (
-            <DropDown
-              selectedCurrency={selectedCurrencyFrom}
-              onCurrencyChange={handleCurrencyChangeFrom}
-              labelText="Selecione a moeda:"
-              currencies={myCurrencies}
-            />
-          ) : (
-            <Text style={styles.loadingText}>Carregando...</Text>
-          )}
-          {selectedCurrencyFrom !== undefined ? (
-            <Text style={styles.balanceText}>
-              Saldo: {balance} {selectedCurrencyFrom.name}
-            </Text>
-          ) : (
-            <Text style={styles.loadingText}>Carregando...</Text>
-          )}
-          <View style={styles.inputContainer}>
-            <Text style={styles.currencySymbol}>
-              {selectedCurrencyFrom != undefined
-                ? selectedCurrencyFrom!.symbol
-                : ""}
-            </Text>
-            <PrimaryTextField
-              placeholder="Valor a Enviar"
-              onChangeText={handleMoneyChange}
-              keyboardType="numeric"
-              style={styles.inputField}
-              value={moneyToSend}
-            />
-          </View>
-          <View style={{ width: 350 }}>
-            <PrimaryButton
-              title="Enviar"
-              onPress={() => {
-                sendMoney();
-              }}
-            />
-          </View>
+        ) : (
+          <Text style={styles.loadingText}>Carregando...</Text>
+        )}
+        {selectedCurrencyFrom !== undefined ? (
+          <Text style={styles.balanceText}>
+            Saldo: {balance} {selectedCurrencyFrom.name}
+          </Text>
+        ) : (
+          <Text style={styles.loadingText}>Carregando...</Text>
+        )}
+        <View style={styles.inputContainer}>
+          <Text style={styles.currencySymbol}>
+            {selectedCurrencyFrom != undefined
+              ? selectedCurrencyFrom!.symbol
+              : ""}
+          </Text>
+          <PrimaryTextField
+            placeholder="Valor a Enviar"
+            onChangeText={handleMoneyChange}
+            keyboardType="numeric"
+            style={styles.inputField}
+            value={moneyToSend}
+          />
         </View>
+        <View style={{ width: 350, paddingBottom: 10 }}>
+          <PrimaryButton
+            title="Enviar"
+            onPress={() => {
+              sendMoney();
+            }}
+          />
+        </View>
+      </ScrollView>
+
+      <View style={styles.bottomContainer}>
+        <ScrollView
+          style={styles.transactionContainerScrollView}
+          contentContainerStyle={{ paddingBottom: tabBarHeight }}
+        >
+          {transactions.map((transaction, index) => (
+            <TransactionContainer
+              key={index}
+              currencyCode={transaction.currencyCode}
+              personInteractionName={transaction.personInteractionName}
+              wasSended={transaction.wasSended}
+              amount={transaction.amount}
+            />
+          ))}
+        </ScrollView>
       </View>
     </View>
   );
@@ -207,15 +258,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "flex-end",
   },
-  contentContainer: {
-    flex: 1,
-  },
-  topContainer: {
-    flex: 0.6, // Alterado para 60% da tela
-    justifyContent: "space-around",
-    alignItems: "center",
-  },
-
   bottomContainer: {
     flex: 1,
     alignItems: "center",
@@ -256,7 +298,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 50,
     borderRadius: 14,
-
     marginBottom: 10,
     fontSize: 16,
     color: "#fff",
@@ -264,6 +305,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#44475c",
     fontFamily: "Poppins",
+  },
+  transactionContainerScrollView: {
+    flex: 1,
   },
 });
 

@@ -1,4 +1,7 @@
-import { CurrencyController } from "../constants/CurrencyController";
+import {
+  CurrencyController,
+  CurrencyModel,
+} from "../constants/CurrencyController";
 import { supabase } from "../constants/Supabase";
 
 export class UserModel {
@@ -67,6 +70,24 @@ export class UserModel {
       );
     });
     return totalValue;
+  }
+
+  getPortifolioTotalValueInMainCurrency(): number {
+    let totalValue = 0;
+    this.portifolio.forEach((item) => {
+      totalValue += Number(
+        CurrencyController.convertCurrency(
+          item.code,
+          this.mainCurrency,
+          item.amount
+        )
+      );
+    });
+    return totalValue;
+  }
+
+  getMainCurrencyModel(): CurrencyModel {
+    return CurrencyController.getCurrencyByCode(this.mainCurrency)!;
   }
 
   async verifyIfUserHasThisAmountInThis(

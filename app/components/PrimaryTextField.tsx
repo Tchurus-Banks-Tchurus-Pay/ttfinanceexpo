@@ -56,7 +56,7 @@ const PrimaryTextField: React.FC<Props> = ({
         secureTextEntry={isPassword ? !showPassword : false}
         underlineColorAndroid="transparent"
         cursorColor={"#fff"}
-        keyboardType={keyboardType} // Passando o keyboardType
+        keyboardType={keyboardType}
       />
       {isPassword && (
         <TouchableOpacity
