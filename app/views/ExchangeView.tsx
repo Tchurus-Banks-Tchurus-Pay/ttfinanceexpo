@@ -9,8 +9,7 @@ import {
   CurrencyController,
   CurrencyModel,
 } from "../constants/CurrencyController";
-import container from "../constants/Inversify";
-import { ExchangeViewController } from "../controllers/ExchangeViewController";
+import { UIScale } from "../constants/UIScale";
 
 interface Props {
   navigation: NavigationProp<any>;
@@ -25,7 +24,6 @@ const ExchangeView: React.FC<Props> = ({ navigation }) => {
     CurrencyController.currencies[1]
   );
 
-  const controller = container.get(ExchangeViewController);
 
   const handleCurrencyChangeFrom = (currency: CurrencyModel) => {
     setSelectedCurrencyFrom(currency);
@@ -56,7 +54,7 @@ const ExchangeView: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { backgroundColor: "#2b2c3e" }]}>
+      <View style={[styles.header, { backgroundColor: "#2b2c3e",  marginTop: UIScale.insets.top }]}>
         <View style={styles.headerLeft}>
           <Text style={styles.headerText}>Câmbio</Text>
         </View>
@@ -110,7 +108,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
-    marginTop: 25,
   },
   headerText: {
     fontSize: 36,
@@ -162,7 +159,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 50,
     borderRadius: 14,
-
     marginBottom: 10,
     fontSize: 16,
     color: "#fff",
@@ -174,3 +170,4 @@ const styles = StyleSheet.create({
 });
 
 export default ExchangeView;
+

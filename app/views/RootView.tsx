@@ -4,7 +4,7 @@ import * as React from "react";
 import { Text, View } from "react-native";
 import { tabBarHeight } from "../constants/Constants";
 import ExchangeView from "./ExchangeView";
-import HomeView from "./HomeView";
+import { HomeViewStack } from "./HomeView";
 import TransactionsView from "./TransactionsView";
 
 function Profile() {
@@ -39,7 +39,7 @@ export default function RootView() {
     >
       <Tab.Screen
         name="Feed"
-        component={HomeView}
+        component={HomeViewStack}
         options={{
           tabBarLabel: "Home",
 

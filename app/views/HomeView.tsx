@@ -1,5 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { NavigationProp } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import React, { useState } from "react";
 import {
   ScrollView,
@@ -15,7 +16,12 @@ import colors from "../constants/Colors";
 import { tabBarHeight } from "../constants/Constants";
 import { CurrencyController } from "../constants/CurrencyController";
 import container from "../constants/Inversify";
+import { UIScale } from "../constants/UIScale";
 import { HomeViewController } from "../controllers/HomeViewController";
+import SettingsView from "./SettingsView";
+
+const Stack = createStackNavigator();
+
 
 interface Props {
   navigation: NavigationProp<any>;
@@ -34,6 +40,11 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
 
   CallbackTrigger.addCallback("update-home-view", updatePortfolio);
 
+
+const goToSettings = () => {
+  navigation.navigate("settings");
+}
+
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -45,6 +56,8 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
     fetchData();
   }, []);
 
+  
+
   return (
     <View style={styles.container}>
       <View style={[styles.header, { backgroundColor: "#2b2c3e" }]}>
@@ -52,7 +65,7 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.headerText}>Portfolio</Text>
         </View>
         <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => console.log("Configurações")}>
+          <TouchableOpacity onPress={() => goToSettings()}>
             <Ionicons name="settings" size={24} color="#ffffff" />
           </TouchableOpacity>
         </View>
@@ -155,3 +168,13 @@ const styles = StyleSheet.create({
 });
 
 export default HomeView;
+
+export function HomeViewStack() {
+  UIScale.init();
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="home" component={HomeView} />
+      <Stack.Screen name="settings" component={SettingsView} />
+    </Stack.Navigator>
+  );
+}

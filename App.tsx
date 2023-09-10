@@ -5,8 +5,10 @@ import { useFonts } from "expo-font";
 import { Provider } from "inversify-react";
 import { useEffect, useState } from "react";
 import "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import container from "./app/constants/Inversify";
 import { supabase } from "./app/constants/Supabase";
+import { UIScale } from "./app/constants/UIScale";
 import { UserSession } from "./app/constants/UserSession";
 import LoginView from "./app/views/LoginView";
 import RegisterView from "./app/views/RegisterView";
@@ -50,15 +52,18 @@ export default function App() {
   }
 
   return (
+    <SafeAreaProvider>
     <Provider container={container}>
       <NavigationContainer>
         {session && session.user ? <MyStack2 /> : <MyStack />}
       </NavigationContainer>
     </Provider>
+    </SafeAreaProvider>
   );
 }
 
 function MyStack() {
+  UIScale.init();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="login" component={LoginView} />
@@ -69,6 +74,7 @@ function MyStack() {
 }
 
 function MyStack2() {
+  UIScale.init();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="root" component={RootView} />
