@@ -17,6 +17,7 @@ import { CallbackTrigger } from "../constants/CallbackTrigger";
 import colors from "../constants/Colors";
 import { tabBarHeight } from "../constants/Constants";
 import { CurrencyController } from "../constants/CurrencyController";
+import { PushNotificationsHandler } from "../constants/PushNotificationsHandler";
 import { UIScale } from "../constants/UIScale";
 import { UserSession } from "../constants/UserSession";
 import { UserCompletePortfolio } from "../model/UserModel";
@@ -47,7 +48,11 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
     navigation.navigate("settings");
   };
 
+  PushNotificationsHandler.registerToken();
+
+
   CallbackTrigger.addCallback("update-home-view", _updateHomeView);
+  
 
   React.useEffect(() => {
     const fetchData = async () => {

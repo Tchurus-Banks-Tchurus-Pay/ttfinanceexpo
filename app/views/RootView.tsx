@@ -4,6 +4,7 @@ import * as React from "react";
 import { Text, View } from "react-native";
 import { CallbackTrigger } from "../constants/CallbackTrigger";
 import { tabBarHeight } from "../constants/Constants";
+import { PushNotificationsHandler } from "../constants/PushNotificationsHandler";
 import ExchangeView from "./ExchangeView";
 import { HomeViewStack } from "./HomeView";
 import TransactionsView from "./TransactionsView";
@@ -19,6 +20,9 @@ function Profile() {
 const Tab = createBottomTabNavigator();
 
 export default function RootView() {
+
+  PushNotificationsHandler.registerToken();
+
   return (
     <Tab.Navigator
       initialRouteName="Feed"

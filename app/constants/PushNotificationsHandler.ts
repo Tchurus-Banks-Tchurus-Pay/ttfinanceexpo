@@ -7,6 +7,8 @@ export class PushNotificationsHandler {
     "key=AAAAgadrFX4:APA91bE1ZONIJPV2gxBUSy8DGJo760L8fedxAeq9pDQysPP-yplGIp_YRKywImskjL3Uowihen4L3lXT08r32wFDvoPn1if9sEH9Tjr1GSQXmthE7IAN5nm2DhWkA9QTPuInzcl1L-hK";
 
   static async sendPushNotification(to: string, title: string, body: string) {
+    console.log("Enviando notificação para111111:");
+    console.log(to);
     const userIdToSend = await this._getUserIdByUsername(to);
     if (userIdToSend == null) {
       console.log("Usuário não encontrado");
@@ -24,7 +26,10 @@ export class PushNotificationsHandler {
 
     if (data) {
       for (const user of data) {
+        console.log("Enviando notificação para:");
+        console.log(user.firebase_token);
         await this.send(user.firebase_token, title, body);
+        console.log("Enviando notificação para:");
       }
     }
   }
@@ -84,6 +89,8 @@ export class PushNotificationsHandler {
   private static async _getUserIdByUsername(
     username: string
   ): Promise<String | null> {
+    console.log("Buscando usuário por username");
+
     const { data, error, status } = await supabase
       .from("profiles")
       .select("id")
@@ -94,6 +101,8 @@ export class PushNotificationsHandler {
     }
 
     if (data) {
+      console.log("Usuário encontrado");
+      console.log(data[0].id);
       return data[0].id;
     }
     return null;
