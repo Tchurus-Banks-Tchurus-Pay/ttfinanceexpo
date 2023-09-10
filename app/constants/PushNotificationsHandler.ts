@@ -6,6 +6,8 @@ export class PushNotificationsHandler {
   private static _apiKey: string =
     "key=AAAAgadrFX4:APA91bE1ZONIJPV2gxBUSy8DGJo760L8fedxAeq9pDQysPP-yplGIp_YRKywImskjL3Uowihen4L3lXT08r32wFDvoPn1if9sEH9Tjr1GSQXmthE7IAN5nm2DhWkA9QTPuInzcl1L-hK";
 
+  private static _hasInitialized = false;
+
   static async sendPushNotification(to: string, title: string, body: string) {
     console.log("Enviando notificação para111111:");
     console.log(to);
@@ -59,6 +61,8 @@ export class PushNotificationsHandler {
   }
 
   static async registerToken() {
+    if (this._hasInitialized) return;
+
     const fcmToken = await messaging().getToken();
     const session = await supabase.auth.getSession();
     const deviceId = await Constants.installationId;
@@ -84,7 +88,23 @@ export class PushNotificationsHandler {
     }
   }
 
-  static async removeToken() {}
+  static async removeToken() {
+    const session = await supabase.auth.getSession();
+    const deviceId = await Constants.installationId;
+    const user_id = session.data.session?.user.id;
+    const device_id = deviceId;
+    const { data, error, status } = await supabase
+      .from("firebase_token_user")
+      .delete()
+      .eq("user_id", user_id)
+      .eq("device_id", device_id);
+
+    if (error) {
+      throw error;
+    } else {
+      this._hasInitialized = false;
+    }
+  }
 
   private static async _getUserIdByUsername(
     username: string
