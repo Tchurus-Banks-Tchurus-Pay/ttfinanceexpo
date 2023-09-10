@@ -20,6 +20,12 @@ export class UserSession {
     }
   }
 
+  static async updateLoggedUserInfo() {
+    if (this._loggedUser != null) {
+      await this._loggedUser.getThisUserInfo();
+    }
+  }
+
   static async updateUserPortfolio() {
     await this.setSession(this._session);
     console.log(this._loggedUser);

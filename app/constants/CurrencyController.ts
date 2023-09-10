@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { currencyColors } from "./Constants";
 
 export class CurrencyController {
   static currencies = new Array<CurrencyModel>();
@@ -224,4 +225,8 @@ export class CurrencyModel {
     public symbol: string,
     public dolarEquivalence: string | null
   ) {}
+
+  public get color(): string {
+    return currencyColors[this.code as keyof typeof currencyColors];
+  }
 }

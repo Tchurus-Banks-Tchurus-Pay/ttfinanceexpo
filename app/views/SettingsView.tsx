@@ -2,6 +2,7 @@ import { NavigationProp } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import PrimaryHeader from "../components/PrimaryHeader";
+import SettingsContainer from "../components/SettingsContainer";
 import colors from "../constants/Colors";
 
 interface Props {
@@ -9,9 +10,25 @@ interface Props {
 }
 
 const SettingsView: React.FC<Props> = ({ navigation }) => {
+  const printSomething = () => {
+    console.log("Hello World");
+  };
+
+  const goToAccount = () => {
+    navigation.navigate("account");
+  };
+
   return (
     <View style={styles.container}>
-        <PrimaryHeader hasBackButton={true} title="Configurações"  />
+      <PrimaryHeader hasBackButton={true} title="Configurações" />
+      <SettingsContainer
+        text="Privacidade e Segurança"
+        onTap={printSomething}
+      />
+      <SettingsContainer text="Conta" onTap={goToAccount} />
+      <SettingsContainer text="Moedas Favoritas" onTap={printSomething} />
+      <SettingsContainer text="Ajuda e Suporte" onTap={printSomething} />
+      <SettingsContainer text="Sair" onTap={printSomething} />
     </View>
   );
 };
@@ -21,28 +38,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.primaryBackground,
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 16,
-  },
-  headerText: {
-    fontSize: 36,
-    fontFamily: "Poppins",
-    color: "#fff",
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  headerRight: {
-    flex: 1,
-    alignItems: "flex-end",
-  },
-  contentContainer: {
-    flex: 1,
-  },
 });
 
 export default SettingsView;
-

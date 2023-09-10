@@ -20,7 +20,9 @@ export class CallbackTrigger {
   static async triggerCallback(name: string, ...args: any[]) {
     const cb = this.callbacks.find((cb) => cb.name === name);
     if (cb) {
+      console.log(`Triggering callback ${name}`);
       await cb.callback();
+      console.log(`Finished callback ${name}`);
     }
   }
 

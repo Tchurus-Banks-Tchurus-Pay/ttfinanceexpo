@@ -46,10 +46,6 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   };
 
   const getMyPortfolioCurrencies = async () => {
-    console.log("getMyPortfolioCurrencies");
-    console.log("getMyPortfolioCurrencies");
-    console.log("getMyPortfolioCurrencies");
-
     const currencies: CurrencyModel[] = [];
     for (let i = 0; i < UserSession.loggedUser?.portifolio.length!; i++) {
       if (UserSession.loggedUser?.portifolio[i].amount != "0") {
@@ -86,8 +82,7 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
           amount: data![i].value,
         });
       }
-      const reversed = transactions.reverse();
-      setTransactions(reversed);
+      setTransactions(transactions);
     }
   };
 
@@ -110,12 +105,6 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
       );
 
     if (hasMoney) {
-      console.log("Tem dinheiro");
-      console.log(UserSession.loggedUser?.username);
-      console.log(usernameToSend);
-      console.log(selectedCurrencyFrom?.code);
-      console.log(moneyToSend);
-
       let { data, error } = await supabase.rpc("transfer_transaction", {
         transfer_currency_code: selectedCurrencyFrom?.code,
         username_from: UserSession.loggedUser?.username,
@@ -138,11 +127,16 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
             UserSession.loggedUser?.username! +
             "!"
         );
-        CallbackTrigger.triggerAll();
+        await CallbackTrigger.triggerAll();
+        await UserSession.updateUserPortfolio();
+        const newBalance = UserSession.loggedUser?.getBalanceIn(
+          selectedCurrencyFrom?.code!
+        )!;
+        setBalance(newBalance);
+        setMoneyToSend("");
+        setUsernameToSend("");
+        getRelatedTransactions();
       }
-      setMoneyToSend("");
-      setUsernameToSend("");
-      getRelatedTransactions();
     } else {
       Alert.alert("Usuário não possui essa quantia nessa moeda! Pobre!");
       setMoneyToSend("");
@@ -153,7 +147,6 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <PrimaryHeader title="Movimentações" />
-
       <ScrollView
         style={{
           height: 260,

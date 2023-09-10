@@ -9,17 +9,17 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import PieChart from "react-native-pie-chart";
 import MyCurrencyContainer from "../components/MyCurrencyContainer";
+import PortifolioGraph from "../components/PortifolioGraph";
 import PrimaryLoader from "../components/PrimaryLoader";
 import { CallbackTrigger } from "../constants/CallbackTrigger";
 import colors from "../constants/Colors";
 import { tabBarHeight } from "../constants/Constants";
 import { CurrencyController } from "../constants/CurrencyController";
-import container from "../constants/Inversify";
 import { UIScale } from "../constants/UIScale";
 import { UserSession } from "../constants/UserSession";
-import { HomeViewController } from "../controllers/HomeViewController";
+import { UserCompletePortfolio } from "../model/UserModel";
+import AccountView from "./AccountView";
 import SettingsView from "./SettingsView";
 
 const Stack = createStackNavigator();
@@ -30,26 +30,30 @@ interface Props {
 
 const HomeView: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState<boolean>(true);
-  const controller = container.get(HomeViewController);
-  controller.register(setLoading, navigation);
-  const widthAndHeight = 230;
+  const [portfolio, setUserCompletePortfolio] = useState<
+    UserCompletePortfolio[]
+  >([]);
 
-  const updatePortfolio = async () => {
+  const _updateHomeView = async () => {
     await CurrencyController.initCurrencies();
-    await controller.getPortfolio();
+    await UserSession.updateUserPortfolio();
+    const completePortfolio = UserSession.loggedUser!.getCompletePortfolio();
+    setUserCompletePortfolio(completePortfolio);
   };
-
-  CallbackTrigger.addCallback("update-home-view", updatePortfolio);
 
   const goToSettings = () => {
     navigation.navigate("settings");
   };
 
+  CallbackTrigger.addCallback("update-home-view", _updateHomeView);
+
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       await CurrencyController.initCurrencies();
-      await controller.getPortfolio();
+      await UserSession.updateUserPortfolio();
+      const completePortfolio = UserSession.loggedUser!.getCompletePortfolio();
+      setUserCompletePortfolio(completePortfolio);
       setLoading(false);
     };
 
@@ -68,45 +72,31 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={[styles.topContainer, { backgroundColor: "#2b2c3e" }]}>
-        {loading == false || controller.graphValues.length == 0 ? (
-          <View>
-            <PieChart
-              widthAndHeight={widthAndHeight}
-              series={controller.graphValues}
-              sliceColor={controller.sliceColors}
-              coverRadius={0.7}
-              coverFill={colors.primaryBackground}
-            />
-            <View style={styles.totalValueContainer}>
-              <Text style={styles.currencySymbol}>$ </Text>
-              <Text style={styles.totalValue}>
-                {controller.totalValue.toFixed(2)}
-              </Text>
-              <Text style={styles.currencyCode}>
-                {UserSession.loggedUser?.mainCurrency}
-              </Text>
-            </View>
+      <View style={styles.graphContainer}>
+        {loading == false ? (
+          <View style={styles.graphContainer}>
+            <PortifolioGraph portfolio={portfolio} />
           </View>
         ) : (
           <PrimaryLoader />
         )}
       </View>
       {loading == false ? (
-        <ScrollView
-          style={[styles.bottomContainer, { backgroundColor: "#232537" }]}
-          contentContainerStyle={{ paddingBottom: tabBarHeight }}
-        >
-          {controller.portifolio.map((currency, index) => (
-            <MyCurrencyContainer
-              key={currency.code}
-              code={currency.code}
-              amount={currency.amount}
-            />
-          ))}
-        </ScrollView>
+        <View style={styles.secondContainer}>
+          <ScrollView>
+            {portfolio.map((item, index) => (
+              <MyCurrencyContainer
+                key={item.currency.code}
+                code={item.currency.code}
+                amount={item.amount}
+              />
+            ))}
+          </ScrollView>
+        </View>
       ) : (
-        <Text>Carregando...</Text>
+        <View style={styles.secondContainer}>
+          <PrimaryLoader />
+        </View>
       )}
     </View>
   );
@@ -136,34 +126,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "flex-end",
   },
-  topContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  bottomContainer: {
-    flex: 3,
-  },
-  totalValueContainer: {
-    flexDirection: "row",
+  graphContainer: {
+    flex: 7,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
   },
-  currencySymbol: {
-    fontSize: 24,
-    fontFamily: "Poppins",
-    color: "#fff",
-  },
-  totalValue: {
-    fontSize: 36,
-    fontFamily: "Poppins",
-    color: "#fff",
-  },
-  currencyCode: {
-    fontSize: 24,
-    fontFamily: "Poppins",
-    color: "#fff",
+  secondContainer: {
+    backgroundColor: colors.tertiaryBackground,
+    flex: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: tabBarHeight,
   },
 });
 
@@ -175,6 +148,7 @@ export function HomeViewStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="home" component={HomeView} />
       <Stack.Screen name="settings" component={SettingsView} />
+      <Stack.Screen name="account" component={AccountView} />
     </Stack.Navigator>
   );
 }

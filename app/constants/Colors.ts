@@ -4,6 +4,7 @@ export default {
   primaryText: "#ffffff",
   secondaryText: "#ffffff",
   primaryButton: "#ffffff",
+  tertiaryBackground: "#232537",
 };
 
 export class UIColors {

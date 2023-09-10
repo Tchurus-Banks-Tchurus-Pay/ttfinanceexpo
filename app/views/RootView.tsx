@@ -48,8 +48,6 @@ export default function RootView() {
         }}
         listeners={{
           tabPress: (e) => {
-            console.log("tabPress");
-            console.log(e);
             CallbackTrigger.triggerCallback("update-home-view");
           },
         }}
@@ -83,8 +81,6 @@ export default function RootView() {
         component={TransactionsView}
         listeners={{
           tabPress: (e) => {
-            console.log("tabPress");
-            console.log(e);
             CallbackTrigger.triggerCallback("get-portfolio");
             CallbackTrigger.triggerCallback("get-transactions");
           },

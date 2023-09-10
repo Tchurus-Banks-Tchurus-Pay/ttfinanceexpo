@@ -16,7 +16,7 @@ interface Props {
   backgroundColor?: string;
   containerStyle?: ViewStyle;
   textStyle?: TextStyle;
-  disabled?: boolean; // Propriedade "disabled"
+  disabled?: boolean;
 }
 
 const PrimaryButton: React.FC<Props> = ({
@@ -27,7 +27,7 @@ const PrimaryButton: React.FC<Props> = ({
   backgroundColor = "#60628a",
   containerStyle = {},
   textStyle = {},
-  disabled = false, // Valor padrão para "disabled"
+  disabled = false,
 }) => {
   return (
     <TouchableOpacity
@@ -35,10 +35,10 @@ const PrimaryButton: React.FC<Props> = ({
         styles.button,
         { height, width, backgroundColor },
         containerStyle,
-        disabled && styles.disabledButton, // Estilo para botão desativado
+        disabled && styles.disabledButton,
       ]}
       onPress={onPress}
-      disabled={disabled} // Propriedade "disabled" do TouchableOpacity
+      disabled={disabled}
     >
       <Text style={[styles.buttonText, textStyle]}>{title}</Text>
     </TouchableOpacity>

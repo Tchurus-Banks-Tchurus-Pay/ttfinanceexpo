@@ -4,6 +4,11 @@ import {
 } from "../constants/CurrencyController";
 import { supabase } from "../constants/Supabase";
 
+export interface UserCompletePortfolio {
+  currency: CurrencyModel;
+  amount: string;
+}
+
 export class UserModel {
   id: string;
   name: string;
@@ -17,7 +22,7 @@ export class UserModel {
     this.name = data.name || "";
     this.username = data.username || "";
     this.avatar = data.avatar || "";
-    this.mainCurrency = data.mainCurrency || "";
+    this.mainCurrency = data.mainCurrency || "USD";
     this.portifolio = data.portifolio || [];
   }
 
@@ -111,6 +116,35 @@ export class UserModel {
         balance = Number(item.amount);
       }
     });
+
     return balance.toFixed(2);
+  }
+
+  getCompletePortfolio(): UserCompletePortfolio[] {
+    let completePortfolio: UserCompletePortfolio[] = [];
+    this.portifolio.forEach((item) => {
+      completePortfolio.push({
+        currency: CurrencyController.getCurrencyByCode(item.code)!,
+        amount: item.amount,
+      });
+    });
+    return completePortfolio;
+  }
+
+  async getThisUserInfo() {
+    let { data, error, status } = await supabase
+      .from("profiles")
+      .select(`*`)
+      .eq("id", this.id)
+      .single();
+
+    if (error && status !== 406) {
+      throw error;
+    }
+
+    this.name = data?.full_name || "";
+    this.avatar = data?.avatar_url || "";
+    this.username = data?.username || "";
+    this.mainCurrency = data?.main_currency_code || "USD";
   }
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { CurrencyController } from "../constants/CurrencyController";
+import { UIScale } from "../constants/UIScale";
 
 interface MyCurrencyContainerProps {
   code: string;
@@ -12,8 +13,10 @@ const MyCurrencyContainer: React.FC<MyCurrencyContainerProps> = ({
   amount,
 }) => {
   const currency = CurrencyController.getCurrencyByCode(code);
+
+  console.log(amount);
   return (
-    <View style={[styles.container, { width: "100%" }]}>
+    <View style={[styles.container, { width: UIScale.deviceWidth }]}>
       <View style={styles.leftContainer}>
         <View style={styles.circle}>
           <Text style={styles.currencyCode}>{code}</Text>
