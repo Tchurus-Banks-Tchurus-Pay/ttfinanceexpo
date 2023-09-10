@@ -148,73 +148,83 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <PrimaryHeader title="Movimentações" />
-      <ScrollView
-        style={{
-          height: 260,
-          backgroundColor: "#2b2c3e",
-        }}
-        contentContainerStyle={{
-          alignItems: "center",
-          justifyContent: "space-around",
-          flex: 1,
-        }}
-      >
+      <View>
         {UserSession.loggedUser!.username == "" ? (
-          <NoUserNameBox />
-        ) : (
-          <View>
-            <Text style={styles.convertedValueText}>Enviar para:</Text>
-            <PrimaryTextField
-              placeholder="Digite o usuário:"
-              onChangeText={handleUsernameChange}
-              style={styles.inputField}
-              containerStyle={{ width: 350 }}
-              value={usernameToSend}
-            />
-            {selectedCurrencyFrom !== undefined ? (
-              <DropDown
-                selectedCurrency={selectedCurrencyFrom}
-                onCurrencyChange={handleCurrencyChangeFrom}
-                labelText="Selecione a moeda:"
-                currencies={myCurrencies}
-              />
-            ) : (
-              <Text style={styles.loadingText}>Carregando...</Text>
-            )}
-            {selectedCurrencyFrom !== undefined ? (
-              <Text style={styles.balanceText}>
-                Saldo: {balance} {selectedCurrencyFrom.name}
-              </Text>
-            ) : (
-              <Text style={styles.loadingText}>Carregando...</Text>
-            )}
-            <View style={styles.inputContainer}>
-              <Text style={styles.currencySymbol}>
-                {selectedCurrencyFrom != undefined
-                  ? selectedCurrencyFrom!.symbol
-                  : ""}
-              </Text>
-              <PrimaryTextField
-                placeholder="Valor a Enviar"
-                onChangeText={handleMoneyChange}
-                keyboardType="numeric"
-                style={styles.inputField}
-                value={moneyToSend}
-              />
-            </View>
-            <View style={{ width: 350, paddingBottom: 10 }}>
-              <PrimaryButton
-                title="Enviar"
-                onPress={() => {
-                  sendMoney();
-                }}
-              />
-            </View>
+          <View
+            style={{
+              height: 200,
+              alignContent: "center",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <NoUserNameBox />
           </View>
+        ) : (
+          <ScrollView>
+            <View
+              style={{
+                alignItems: "center",
+                alignContent: "center",
+                alignSelf: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={styles.convertedValueText}>Enviar para:</Text>
+              <PrimaryTextField
+                placeholder="Digite o usuário:"
+                onChangeText={handleUsernameChange}
+                style={styles.inputField}
+                containerStyle={{ width: 350 }}
+                value={usernameToSend}
+              />
+
+              {selectedCurrencyFrom !== undefined ? (
+                <DropDown
+                  selectedCurrency={selectedCurrencyFrom}
+                  onCurrencyChange={handleCurrencyChangeFrom}
+                  labelText="Selecione a moeda:"
+                  currencies={myCurrencies}
+                />
+              ) : (
+                <Text style={styles.loadingText}>Carregando...</Text>
+              )}
+              {selectedCurrencyFrom !== undefined ? (
+                <Text style={styles.balanceText}>
+                  Saldo: {balance} {selectedCurrencyFrom.name}
+                </Text>
+              ) : (
+                <Text style={styles.loadingText}>Carregando...</Text>
+              )}
+              <View style={styles.inputContainer}>
+                <Text style={styles.currencySymbol}>
+                  {selectedCurrencyFrom != undefined
+                    ? selectedCurrencyFrom!.symbol
+                    : ""}
+                </Text>
+                <PrimaryTextField
+                  placeholder="Valor a Enviar"
+                  onChangeText={handleMoneyChange}
+                  keyboardType="numeric"
+                  style={styles.inputField}
+                  value={moneyToSend}
+                />
+              </View>
+              <View style={{ width: 350, paddingBottom: 10 }}>
+                <PrimaryButton
+                  title="Enviar"
+                  onPress={() => {
+                    sendMoney();
+                  }}
+                />
+              </View>
+            </View>
+          </ScrollView>
         )}
-      </ScrollView>
+      </View>
       <View style={styles.bottomContainer}>
         <ScrollView
+          keyboardDismissMode="none"
           style={styles.transactionContainerScrollView}
           contentContainerStyle={{ paddingBottom: tabBarHeight }}
         >

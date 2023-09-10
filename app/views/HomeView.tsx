@@ -50,9 +50,7 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
 
   PushNotificationsHandler.registerToken();
 
-
   CallbackTrigger.addCallback("update-home-view", _updateHomeView);
-  
 
   React.useEffect(() => {
     const fetchData = async () => {
