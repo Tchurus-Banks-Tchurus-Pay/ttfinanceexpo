@@ -1,9 +1,10 @@
 import { NavigationProp } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import DropDown from "../components/CurrencyDropdown";
 import PrimaryButton from "../components/PrimaryButton";
 import PrimaryHeader from "../components/PrimaryHeader";
+import PrimaryTextField from "../components/PrimaryTextField";
 import { CallbackTrigger } from "../constants/CallbackTrigger";
 import colors from "../constants/Colors";
 import {
@@ -21,6 +22,9 @@ interface Props {
 const AccountView: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUserModel] = useState<UserModel>(UserSession.loggedUser!);
+  const [username, setUsername] = useState<string>(
+    UserSession.loggedUser!.username
+  );
   const [mainCurrency, setMainCurrency] = useState<CurrencyModel>(
     CurrencyController.getCurrencyByCode(user.mainCurrency)!
   );
@@ -37,6 +41,19 @@ const AccountView: React.FC<Props> = ({ navigation }) => {
 
     if (error && status !== 406) {
       throw error;
+    } else {
+      CallbackTrigger.triggerCallback("update-home-view");
+    }
+  };
+
+  const updateUsername = async () => {
+    let { error, status } = await supabase
+      .from("profiles")
+      .update({ username: username })
+      .eq("id", user.id);
+
+    if (error && status !== 406) {
+      Alert.alert("Erro", error.message);
     } else {
       CallbackTrigger.triggerCallback("update-home-view");
     }
@@ -60,6 +77,12 @@ const AccountView: React.FC<Props> = ({ navigation }) => {
         labelText="Altere aqui sua moeda principal:"
       />
       <PrimaryButton title="Salvar" onPress={updateMainCurrency} />
+      <PrimaryTextField
+        placeholder="Username"
+        onChangeText={setUsername}
+        value={username}
+      />
+      <PrimaryButton title="Salvar" onPress={updateUsername} />
     </View>
   );
 };

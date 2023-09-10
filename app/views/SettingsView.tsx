@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 import PrimaryHeader from "../components/PrimaryHeader";
 import SettingsContainer from "../components/SettingsContainer";
 import colors from "../constants/Colors";
+import { supabase } from "../constants/Supabase";
 
 interface Props {
   navigation: NavigationProp<any>;
@@ -18,6 +19,11 @@ const SettingsView: React.FC<Props> = ({ navigation }) => {
     navigation.navigate("account");
   };
 
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    navigation.canGoBack() ? navigation.goBack() : navigation.navigate("login");
+  };
+
   return (
     <View style={styles.container}>
       <PrimaryHeader hasBackButton={true} title="Configurações" />
@@ -28,7 +34,7 @@ const SettingsView: React.FC<Props> = ({ navigation }) => {
       <SettingsContainer text="Conta" onTap={goToAccount} />
       <SettingsContainer text="Moedas Favoritas" onTap={printSomething} />
       <SettingsContainer text="Ajuda e Suporte" onTap={printSomething} />
-      <SettingsContainer text="Sair" onTap={printSomething} />
+      <SettingsContainer text="Sair" onTap={signOut} />
     </View>
   );
 };

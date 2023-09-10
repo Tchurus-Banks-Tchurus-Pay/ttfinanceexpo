@@ -36,23 +36,9 @@ export class LoginViewController {
       Alert.alert(error.message);
       this.loading(false);
     } else {
-      /*       console.log("entrou");
-      let session: Session | null = (await supabase.auth.getSession()).data
-        .session;
-      console.log(session);
-      console.log(session?.user?.id);
-      console.log(session?.user?.email);
-      await supabase.auth.signOut();
-      let session2: Session | null = (await supabase.auth.getSession()).data
-        .session;
-      console.log(session2); */
       let session: Session | null = (await supabase.auth.getSession()).data
         .session;
       UserSession.setSession(session);
-      this.navigation?.reset({
-        index: 0,
-        routes: [{ name: "root" }],
-      });
       this.loading(false);
     }
   }

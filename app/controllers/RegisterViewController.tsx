@@ -21,6 +21,13 @@ export class RegisterViewController {
     this.navigation = navigation;
   }
 
+  async _handleLogin(email: string, password: string) {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+  }
+
   async signUpWithEmail(email: string, password: string) {
     this.loading(true);
 
@@ -33,13 +40,11 @@ export class RegisterViewController {
       Alert.alert(error.message);
       this.loading(false);
     } else {
+      console.log("User created successfully");
       let session: Session | null = (await supabase.auth.getSession()).data
         .session;
+      await this._handleLogin(email, password);
       UserSession.setSession(session);
-      this.navigation?.reset({
-        index: 0,
-        routes: [{ name: "root" }],
-      });
       this.loading(false);
     }
   }

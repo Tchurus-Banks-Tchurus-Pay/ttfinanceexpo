@@ -38,6 +38,8 @@ export default function App() {
     });
 
     supabase.auth.onAuthStateChange((_event, session) => {
+      console.log(session);
+      console.log(session?.user?.id);
       setSession(session);
       UserSession.setSession(session);
     });
@@ -53,11 +55,11 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-    <Provider container={container}>
-      <NavigationContainer>
-        {session && session.user ? <MyStack2 /> : <MyStack />}
-      </NavigationContainer>
-    </Provider>
+      <Provider container={container}>
+        <NavigationContainer>
+          {session && session.user ? <MyStack2 /> : <MyStack />}
+        </NavigationContainer>
+      </Provider>
     </SafeAreaProvider>
   );
 }
@@ -68,7 +70,6 @@ function MyStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="login" component={LoginView} />
       <Stack.Screen name="register" component={RegisterView} />
-      <Stack.Screen name="root" component={RootView} />
     </Stack.Navigator>
   );
 }

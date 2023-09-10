@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import MyCurrencyContainer from "../components/MyCurrencyContainer";
+import NoUserNameBox from "../components/NoUsernameBox";
 import PortifolioGraph from "../components/PortifolioGraph";
 import PrimaryLoader from "../components/PrimaryLoader";
 import { CallbackTrigger } from "../constants/CallbackTrigger";
@@ -37,6 +38,7 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
   const _updateHomeView = async () => {
     await CurrencyController.initCurrencies();
     await UserSession.updateUserPortfolio();
+    await UserSession.updateLoggedUserInfo();
     const completePortfolio = UserSession.loggedUser!.getCompletePortfolio();
     setUserCompletePortfolio(completePortfolio);
   };
@@ -50,6 +52,7 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      await UserSession.updateLoggedUserInfo();
       await CurrencyController.initCurrencies();
       await UserSession.updateUserPortfolio();
       const completePortfolio = UserSession.loggedUser!.getCompletePortfolio();
@@ -72,15 +75,21 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+
       <View style={styles.graphContainer}>
         {loading == false ? (
           <View style={styles.graphContainer}>
-            <PortifolioGraph portfolio={portfolio} />
+            {UserSession.loggedUser!.username == "" ? (
+              <NoUserNameBox />
+            ) : (
+              <PortifolioGraph portfolio={portfolio} />
+            )}
           </View>
         ) : (
           <PrimaryLoader />
         )}
       </View>
+
       {loading == false ? (
         <View style={styles.secondContainer}>
           <ScrollView>
