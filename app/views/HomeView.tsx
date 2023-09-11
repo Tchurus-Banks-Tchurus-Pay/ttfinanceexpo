@@ -22,6 +22,7 @@ import { UIScale } from "../constants/UIScale";
 import { UserSession } from "../constants/UserSession";
 import { UserCompletePortfolio } from "../model/UserModel";
 import AccountView from "./AccountView";
+import CurrenciesToLike from "./CurrenciesToLike";
 import SettingsView from "./SettingsView";
 
 const Stack = createStackNavigator();
@@ -161,6 +162,7 @@ export function HomeViewStack() {
       <Stack.Screen name="home" component={HomeView} />
       <Stack.Screen name="settings" component={SettingsView} />
       <Stack.Screen name="account" component={AccountView} />
+      <Stack.Screen name="currencies-to-like" component={CurrenciesToLike} />
     </Stack.Navigator>
   );
 }

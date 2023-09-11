@@ -111,6 +111,7 @@ export class UserModel {
 
   getBalanceIn(currencyCode: string): string {
     let balance = 0;
+
     this.portifolio.forEach((item) => {
       if (item.code === currencyCode) {
         balance = Number(item.amount);

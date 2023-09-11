@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Session } from "@supabase/supabase-js";
 import { useFonts } from "expo-font";
 import { Provider } from "inversify-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import container from "./app/constants/Inversify";
@@ -13,25 +13,22 @@ import { UserSession } from "./app/constants/UserSession";
 import LoginView from "./app/views/LoginView";
 import RegisterView from "./app/views/RegisterView";
 import RootView from "./app/views/RootView";
+import SplashScreen from "./app/views/SplashScreen";
 
-/* const firebaseConfig = {
-  apiKey: "AIzaSyCyBb4roWgWAIgc2FnUBywifh4mxlRgBNg",
-  authDomain: "tchurubanks.firebaseapp.com",
-  projectId: "tchurubanks",
-  storageBucket: "tchurubanks.appspot.com",
-  messagingSenderId: "556859594110",
-  appId: "1:556859594110:web:a88be1d0269af2283bcf2f",
-  measurementId: "G-3XJ1FH688Y",
-};
-
-const app = initializeApp(firebaseConfig);
- */
 const Stack = createStackNavigator();
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
+  const [fontsLoaded, fontError] = useFonts({
+    Poppins: require("./assets/fonts/poppins/Poppins-Regular.ttf"),
+  });
+  const [appLoading, setAppLoading] = useState(true);
 
   useEffect(() => {
+    if (fontsLoaded && !fontError) {
+      setAppLoading(false);
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       UserSession.setSession(session);
@@ -43,14 +40,14 @@ export default function App() {
       setSession(session);
       UserSession.setSession(session);
     });
+
+    setTimeout(() => {
+      setAppLoading(false);
+    }, 2000);
   }, []);
 
-  const [fontsLoaded, fontError] = useFonts({
-    Poppins: require("./assets/fonts/poppins/Poppins-Regular.ttf"),
-  });
-
-  if (!fontsLoaded && !fontError) {
-    return null;
+  if (appLoading) {
+    return <SplashScreen />;
   }
 
   return (

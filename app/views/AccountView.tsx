@@ -5,6 +5,7 @@ import DropDown from "../components/CurrencyDropdown";
 import PrimaryButton from "../components/PrimaryButton";
 import PrimaryHeader from "../components/PrimaryHeader";
 import PrimaryTextField from "../components/PrimaryTextField";
+import UIText from "../components/UIText";
 import { CallbackTrigger } from "../constants/CallbackTrigger";
 import colors from "../constants/Colors";
 import {
@@ -22,6 +23,9 @@ interface Props {
 const AccountView: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUserModel] = useState<UserModel>(UserSession.loggedUser!);
+  const [usernameText, setUsernameText] = useState<string>(
+    UserSession.loggedUser!.username
+  );
   const [username, setUsername] = useState<string>(
     UserSession.loggedUser!.username
   );
@@ -49,13 +53,15 @@ const AccountView: React.FC<Props> = ({ navigation }) => {
   const updateUsername = async () => {
     let { error, status } = await supabase
       .from("profiles")
-      .update({ username: username })
+      .update({ username: usernameText })
       .eq("id", user.id);
 
     if (error && status !== 406) {
       Alert.alert("Erro", error.message);
     } else {
-      CallbackTrigger.triggerCallback("update-home-view");
+      await CallbackTrigger.triggerCallback("update-home-view");
+      await UserSession.updateLoggedUserInfo();
+      setUsername(UserSession.loggedUser!.username);
     }
   };
 
@@ -71,18 +77,51 @@ const AccountView: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <PrimaryHeader hasBackButton={true} title="Conta" />
-      <DropDown
-        selectedCurrency={mainCurrency}
-        onCurrencyChange={handleCurrencyChangeTo}
-        labelText="Altere aqui sua moeda principal:"
-      />
-      <PrimaryButton title="Salvar" onPress={updateMainCurrency} />
-      <PrimaryTextField
-        placeholder="Username"
-        onChangeText={setUsername}
-        value={username}
-      />
-      <PrimaryButton title="Salvar" onPress={updateUsername} />
+      <View
+        style={{
+          alignItems: "center",
+          alignContent: "center",
+          marginTop: 20,
+          marginHorizontal: 20,
+        }}
+      >
+        <DropDown
+          selectedCurrency={mainCurrency}
+          onCurrencyChange={handleCurrencyChangeTo}
+          labelText="Altere aqui sua moeda principal:"
+        />
+        <PrimaryButton title="Salvar" onPress={updateMainCurrency} />
+      </View>
+
+      {username != "" ? (
+        <UIText
+          style={{
+            alignItems: "center",
+            alignContent: "center",
+            textAlign: "center",
+            marginTop: 20,
+            fontSize: 18,
+          }}
+        >
+          Seu username é: {username}
+        </UIText>
+      ) : (
+        <View
+          style={{
+            alignItems: "center",
+            alignContent: "center",
+            marginTop: 20,
+            marginHorizontal: 20,
+          }}
+        >
+          <PrimaryTextField
+            placeholder="Username"
+            onChangeText={setUsernameText}
+            value={usernameText}
+          />
+          <PrimaryButton title="Salvar" onPress={updateUsername} />
+        </View>
+      )}
     </View>
   );
 };

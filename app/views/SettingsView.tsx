@@ -19,6 +19,10 @@ const SettingsView: React.FC<Props> = ({ navigation }) => {
     navigation.navigate("account");
   };
 
+  const goToCurrenciesToLike = () => {
+    navigation.navigate("currencies-to-like");
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     navigation.canGoBack() ? navigation.goBack() : navigation.navigate("login");
@@ -32,7 +36,7 @@ const SettingsView: React.FC<Props> = ({ navigation }) => {
         onTap={printSomething}
       />
       <SettingsContainer text="Conta" onTap={goToAccount} />
-      <SettingsContainer text="Moedas Favoritas" onTap={printSomething} />
+      <SettingsContainer text="Moedas Favoritas" onTap={goToCurrenciesToLike} />
       <SettingsContainer text="Ajuda e Suporte" onTap={printSomething} />
       <SettingsContainer text="Sair" onTap={signOut} />
     </View>

@@ -33,7 +33,11 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   );
   const [myCurrencies, setMyCurrencies] = useState<CurrencyModel[]>([]);
   const [selectedCurrencyFrom, setSelectedCurrencyFrom] =
-    useState<CurrencyModel>();
+    useState<CurrencyModel>(
+      CurrencyController.getCurrencyByCode(
+        UserSession.loggedUser?.portifolio[0].code!
+      )!
+    );
 
   React.useEffect(() => {
     getMyPortfolioCurrencies();
@@ -128,11 +132,12 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
             UserSession.loggedUser?.username! +
             "!"
         );
-        await CallbackTrigger.triggerAll();
         await UserSession.updateUserPortfolio();
+
         const newBalance = UserSession.loggedUser?.getBalanceIn(
           selectedCurrencyFrom?.code!
         )!;
+
         setBalance(newBalance);
         setMoneyToSend("");
         setUsernameToSend("");

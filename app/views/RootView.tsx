@@ -1,26 +1,17 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import * as React from "react";
-import { Text, View } from "react-native";
 import { CallbackTrigger } from "../constants/CallbackTrigger";
 import { tabBarHeight } from "../constants/Constants";
 import { PushNotificationsHandler } from "../constants/PushNotificationsHandler";
 import ExchangeView from "./ExchangeView";
+import FavoritesView from "./FavoritesView";
 import { HomeViewStack } from "./HomeView";
 import TransactionsView from "./TransactionsView";
-
-function Profile() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Profile!</Text>
-    </View>
-  );
-}
 
 const Tab = createBottomTabNavigator();
 
 export default function RootView() {
-
   PushNotificationsHandler.registerToken();
 
   return (
@@ -72,12 +63,17 @@ export default function RootView() {
       />
       <Tab.Screen
         name="Favorites"
-        component={Profile}
+        component={FavoritesView}
         options={{
           tabBarLabel: "Favorites",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="heart" color={color} size={size} />
           ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            CallbackTrigger.triggerCallback("update-favorites");
+          },
         }}
       />
       <Tab.Screen

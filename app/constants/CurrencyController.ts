@@ -8,6 +8,7 @@ export class CurrencyController {
     "fca_live_KoZYTzwxnvuHgkT6Z5E2oBI8aaRF36iDsqwosb3W";
 
   static async initCurrencies() {
+    this.currencies = [];
     await this.loadCurrencies();
     await this.loadDolarEquivalence();
   }
