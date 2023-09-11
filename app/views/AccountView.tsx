@@ -94,17 +94,31 @@ const AccountView: React.FC<Props> = ({ navigation }) => {
       </View>
 
       {username != "" ? (
-        <UIText
-          style={{
-            alignItems: "center",
-            alignContent: "center",
-            textAlign: "center",
-            marginTop: 20,
-            fontSize: 18,
-          }}
-        >
-          Seu username é: {username}
-        </UIText>
+        <View>
+          <UIText
+            style={{
+              alignItems: "center",
+              alignContent: "center",
+              textAlign: "center",
+              marginTop: 20,
+              fontSize: 18,
+            }}
+          >
+            Seu username é: {username}
+          </UIText>
+          <UIText
+            style={{
+              alignItems: "center",
+              alignContent: "center",
+              textAlign: "center",
+              marginTop: 4,
+              fontSize: 14,
+              color: "gray",
+            }}
+          >
+            Você não pode mudá-lo.
+          </UIText>
+        </View>
       ) : (
         <View
           style={{

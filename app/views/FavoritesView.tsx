@@ -91,7 +91,14 @@ const FavoritesView: React.FC<Props> = ({ navigation }) => {
         }}
       >
         {favoritedCurrencies.map((item, index) => (
-          <View style={{ margin: 10 }} key={index}>
+          <View
+            style={{
+              marginBottom: 1,
+              padding: 10,
+              backgroundColor: colors.secondaryBackground,
+            }}
+            key={index}
+          >
             <UIText>{item.code}</UIText>
             <UIText>{item.name}</UIText>
             <UIText>

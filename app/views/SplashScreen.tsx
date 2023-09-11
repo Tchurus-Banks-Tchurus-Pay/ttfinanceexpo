@@ -15,7 +15,7 @@ const SplashScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>dasdasdas</Text>
+      <Text>Entrando no Tchurus Banks Tchurus Pay</Text>
     </View>
   );
 };
