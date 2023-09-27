@@ -28,6 +28,7 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   const [moneyToSend, setMoneyToSend] = useState<string>("");
   const [usernameToSend, setUsernameToSend] = useState<string>("");
   const [balance, setBalance] = useState<string>("");
+  const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
   const [transactions, setTransactions] = useState<TransactionContainerProps[]>(
     []
   );
@@ -95,12 +96,26 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   CallbackTrigger.addCallback("get-transactions", getRelatedTransactions);
 
   const handleMoneyChange = (text: string) => {
+    console.log(text);
     setMoneyToSend(text);
+    console.log(moneyToSend)
+    verifyIfButtonIsEnable();
   };
 
   const handleUsernameChange = (text: string) => {
+    console.log(text);
     setUsernameToSend(text);
+    console.log(usernameToSend)
+    verifyIfButtonIsEnable();
   };
+
+  const verifyIfButtonIsEnable = () => {
+    if (usernameToSend != "" && moneyToSend != "") {
+      setIsButtonEnabled(true);
+    } else {
+      setIsButtonEnabled(false);
+    }
+  }
 
   const sendMoney = async () => {
     const hasMoney =
@@ -217,6 +232,7 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
               </View>
               <View style={{ width: 350, paddingBottom: 10 }}>
                 <PrimaryButton
+                  disabled={!isButtonEnabled}
                   title="Enviar"
                   onPress={() => {
                     sendMoney();

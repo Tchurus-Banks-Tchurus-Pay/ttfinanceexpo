@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import colors from "../constants/Colors";
 import { CurrencyController } from "../constants/CurrencyController";
 import { UIScale } from "../constants/UIScale";
 
@@ -18,8 +19,8 @@ const MyCurrencyContainer: React.FC<MyCurrencyContainerProps> = ({
   return (
     <View style={[styles.container, { width: UIScale.deviceWidth }]}>
       <View style={styles.leftContainer}>
-        <View style={styles.circle}>
-          <Text style={styles.currencyCode}>{code}</Text>
+        <View style={[styles.circle, {backgroundColor: colors.secondaryBackground}]}>
+          <Text style={[styles.currencyCode, {color: currency?.color}]}>{code}</Text>
         </View>
         <Text style={styles.currencyName}>{currency?.name}</Text>
       </View>
@@ -50,14 +51,11 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 100,
-    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
   },
   currencyCode: {
     fontSize: 18,
-
-    color: "#232537",
   },
   currencyName: {
     marginLeft: 8,

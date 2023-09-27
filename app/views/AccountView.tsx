@@ -21,7 +21,6 @@ interface Props {
 }
 
 const AccountView: React.FC<Props> = ({ navigation }) => {
-  const [loading, setLoading] = useState<boolean>(true);
   const [user, setUserModel] = useState<UserModel>(UserSession.loggedUser!);
   const [usernameText, setUsernameText] = useState<string>(
     UserSession.loggedUser!.username

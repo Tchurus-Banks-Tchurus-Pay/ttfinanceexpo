@@ -206,6 +206,10 @@ export class CurrencyController {
     }
   }
 
+  public static getCurrencyColorByCode(code: string) : String {
+    return currencyColors[code as keyof typeof currencyColors];
+  }
+
   private static async tryToGetDolarEquivalenceFromLocalStorage(): Promise<any> {
     try {
       const value = await AsyncStorage.getItem("dolar-equivalence");
