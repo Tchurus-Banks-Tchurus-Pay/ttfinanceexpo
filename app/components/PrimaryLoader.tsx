@@ -1,12 +1,13 @@
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
+import { Flow } from "react-native-animated-spinkit";
 
 
 
 interface Props {}
 
 const PrimaryLoader: React.FC<Props> = ({}) => {
-  return  <Text>Carregando...</Text>
+  return <Flow size={48} color="#FFF" />;
 };
 
 const styles = StyleSheet.create({
