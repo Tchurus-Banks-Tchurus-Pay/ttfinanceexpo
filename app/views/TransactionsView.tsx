@@ -35,6 +35,7 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   const [myCurrencies, setMyCurrencies] = useState<CurrencyModel[]>([]);
   const [selectedCurrencyFrom, setSelectedCurrencyFrom] =
     useState<CurrencyModel>(
+      UserSession.loggedUser?.portifolio.length == 0 ? CurrencyController.getCurrencyByCode("USD")! :
       CurrencyController.getCurrencyByCode(
         UserSession.loggedUser?.portifolio[0].code!
       )!
@@ -46,12 +47,18 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   }, []);
 
   const handleCurrencyChangeFrom = (currency: CurrencyModel) => {
+    if( UserSession.loggedUser?.portifolio.length == 0){
+      setBalance("0");
+      return;
+    } 
     setSelectedCurrencyFrom(currency);
     setBalance(UserSession.loggedUser?.getBalanceIn(currency.code)!);
-    console.log(currency);
   };
 
   const getMyPortfolioCurrencies = async () => {
+    if( UserSession.loggedUser?.portifolio.length == 0){
+      return;
+    }
     const currencies: CurrencyModel[] = [];
     for (let i = 0; i < UserSession.loggedUser?.portifolio.length!; i++) {
       if (UserSession.loggedUser?.portifolio[i].amount != "0") {
@@ -96,16 +103,12 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   CallbackTrigger.addCallback("get-transactions", getRelatedTransactions);
 
   const handleMoneyChange = (text: string) => {
-    console.log(text);
     setMoneyToSend(text);
-    console.log(moneyToSend)
     verifyIfButtonIsEnable();
   };
 
   const handleUsernameChange = (text: string) => {
-    console.log(text);
     setUsernameToSend(text);
-    console.log(usernameToSend)
     verifyIfButtonIsEnable();
   };
 
@@ -182,6 +185,14 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
           </View>
         ) : (
           <ScrollView>
+          { UserSession.loggedUser?.portifolio.length == 0 ? (<View     style={{
+              height: 200,
+              alignContent: "center",
+              alignItems: "center",
+              justifyContent: "center",
+            }}> 
+            <Text style={styles.convertedValueText}>Você não possui moedas!</Text>
+          </View>) : (
             <View
               style={{
                 alignItems: "center",
@@ -239,7 +250,7 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
                   }}
                 />
               </View>
-            </View>
+            </View>)}
           </ScrollView>
         )}
       </View>
