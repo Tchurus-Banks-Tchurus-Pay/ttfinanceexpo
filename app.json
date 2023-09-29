@@ -2,7 +2,7 @@
   "expo": {
     "name": "financeexpo",
     "slug": "financeexpo",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "plugins": [
       "@react-native-firebase/app"
     ],
@@ -27,7 +27,8 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.tt.financeapp",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "buildNumber":"1.0.3"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
