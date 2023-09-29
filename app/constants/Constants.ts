@@ -1,4 +1,4 @@
-export const tabBarHeight = 60;
+export const tabBarHeight = 50;
 
 export const currencyColors = {
   AUD: "#FF5733", // Laranja

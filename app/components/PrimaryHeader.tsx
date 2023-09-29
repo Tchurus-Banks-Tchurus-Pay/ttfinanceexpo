@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -7,14 +8,36 @@ import { UIScale } from "../constants/UIScale";
 interface Props {
   title: string;
   hasBackButton?: boolean;
+  iconName?: string;
+  callback?: () => void;
 }
 
-const PrimaryHeader: React.FC<Props> = ({ title, hasBackButton = false }) => {
+const PrimaryHeader: React.FC<Props> = ({ title, hasBackButton = false, iconName, callback }) => {
   const navigation = useNavigation();
 
   const handleBackButtonPress = () => {
     navigation.goBack();
   };
+
+  if(iconName){
+    return (
+      <View
+      style={[
+        styles.header,
+        { backgroundColor: "#2b2c3e", marginTop: UIScale.insets.top },
+      ]}
+    >
+        <Text
+          style={styles.headerText}
+        >
+          {title}
+        </Text>
+        <TouchableOpacity onPress={callback}>
+        <Ionicons name="settings" size={24} color="#ffffff" />
+        </TouchableOpacity>
+        </View>
+    );
+  }
 
   return (
     <View

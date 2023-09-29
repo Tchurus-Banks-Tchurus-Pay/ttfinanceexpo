@@ -4,6 +4,7 @@ import * as React from "react";
 import { CallbackTrigger } from "../constants/CallbackTrigger";
 import { tabBarHeight } from "../constants/Constants";
 import { PushNotificationsHandler } from "../constants/PushNotificationsHandler";
+import { UIScale } from "../constants/UIScale";
 import ExchangeView from "./ExchangeView";
 import FavoritesView from "./FavoritesView";
 import { HomeViewStack } from "./HomeView";
@@ -22,10 +23,10 @@ export default function RootView() {
         tabBarActiveTintColor: "#ffffff",
         headerShown: false,
         tabBarStyle: {
-          height: tabBarHeight,
+          height: tabBarHeight + UIScale.insets.bottom,
           paddingHorizontal: 5,
           paddingTop: 5,
-          paddingBottom: 5,
+          paddingBottom: UIScale.insets.bottom,
           backgroundColor: "#2b2c3e",
           position: "absolute",
           borderTopWidth: 0,

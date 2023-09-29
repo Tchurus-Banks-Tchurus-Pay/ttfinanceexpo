@@ -1,17 +1,15 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { NavigationProp } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useState } from "react";
 import {
   ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import MyCurrencyContainer from "../components/MyCurrencyContainer";
 import NoUserNameBox from "../components/NoUsernameBox";
 import PortifolioGraph from "../components/PortifolioGraph";
+import PrimaryHeader from "../components/PrimaryHeader";
 import PrimaryLoader from "../components/PrimaryLoader";
 import { CallbackTrigger } from "../constants/CallbackTrigger";
 import colors from "../constants/Colors";
@@ -69,15 +67,16 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { backgroundColor: "#2b2c3e" }]}>
-        <View style={styles.headerLeft}>
+      <View style={{}}>
+        {/* <View style={styles.headerLeft}>
           <Text style={styles.headerText}>Portfolio</Text>
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity onPress={() => goToSettings()}>
             <Ionicons name="settings" size={24} color="#ffffff" />
           </TouchableOpacity>
-        </View>
+        </View> */}
+        <PrimaryHeader title="Portfolio" hasBackButton={false} iconName="settings" callback={goToSettings} />
       </View>
 
       <View style={styles.graphContainer}>
