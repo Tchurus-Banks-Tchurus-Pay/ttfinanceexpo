@@ -63,6 +63,15 @@ export class PushNotificationsHandler {
   static async registerToken() {
     if (this._hasInitialized) return;
 
+    await messaging().requestPermission();
+
+    const isRegistered: boolean =
+      messaging().isDeviceRegisteredForRemoteMessages;
+
+    if (!isRegistered) {
+      await messaging().registerDeviceForRemoteMessages();
+    }
+
     const fcmToken = await messaging().getToken();
     const session = await supabase.auth.getSession();
     const deviceId = await Constants.installationId;
@@ -81,7 +90,7 @@ export class PushNotificationsHandler {
           ],
           { onConflict: "device_id" }
         );
-
+      this._hasInitialized = true;
       if (error) {
         throw error;
       }
