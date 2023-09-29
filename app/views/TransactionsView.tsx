@@ -221,9 +221,11 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
                 <Text style={styles.loadingText}>Carregando...</Text>
               )}
               {selectedCurrencyFrom !== undefined ? (
+                <View style={{marginVertical: 7}}>
                 <Text style={styles.balanceText}>
                   Saldo: {balance} {selectedCurrencyFrom.name}
                 </Text>
+                </View>
               ) : (
                 <Text style={styles.loadingText}>Carregando...</Text>
               )}
