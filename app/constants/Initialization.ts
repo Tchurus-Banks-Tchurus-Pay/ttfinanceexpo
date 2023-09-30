@@ -9,7 +9,8 @@ messaging().onMessage(async (remoteMessage) => {
     remoteMessage.notification?.body ?? "Corpo da notificação"
   );
   console.log(JSON.stringify(remoteMessage));
-  await CallbackTrigger.triggerAll();
+  await CallbackTrigger.triggerCallback("get-portfolio");
+  await CallbackTrigger.triggerCallback("update-home-view");
 });
 
 export class Initialization {

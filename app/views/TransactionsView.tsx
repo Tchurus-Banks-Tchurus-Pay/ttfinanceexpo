@@ -5,6 +5,7 @@ import DropDown from "../components/CurrencyDropdown";
 import NoUserNameBox from "../components/NoUsernameBox";
 import PrimaryButton from "../components/PrimaryButton";
 import PrimaryHeader from "../components/PrimaryHeader";
+import PrimaryLoader from "../components/PrimaryLoader";
 import PrimaryTextField from "../components/PrimaryTextField";
 import TransactionContainer, {
   TransactionContainerProps,
@@ -18,6 +19,7 @@ import {
 } from "../constants/CurrencyController";
 import { PushNotificationsHandler } from "../constants/PushNotificationsHandler";
 import { supabase } from "../constants/Supabase";
+import { UIScale } from "../constants/UIScale";
 import { UserSession } from "../constants/UserSession";
 
 interface Props {
@@ -33,6 +35,7 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
     []
   );
   const [myCurrencies, setMyCurrencies] = useState<CurrencyModel[]>([]);
+  const [isPortfolioLoading, setIsPortfolioLoading] = useState<boolean>(true);
   const [selectedCurrencyFrom, setSelectedCurrencyFrom] =
     useState<CurrencyModel>(
       UserSession.loggedUser?.portifolio.length == 0 ? CurrencyController.getCurrencyByCode("USD")! :
@@ -56,24 +59,33 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   };
 
   const getMyPortfolioCurrencies = async () => {
-    if( UserSession.loggedUser?.portifolio.length == 0){
-      return;
+
+try{   setIsPortfolioLoading(true);
+  if( UserSession.loggedUser?.portifolio.length == 0){
+    setIsPortfolioLoading(false);
+    return;
+  }
+  const currencies: CurrencyModel[] = [];
+  for (let i = 0; i < UserSession.loggedUser?.portifolio.length!; i++) {
+    if (UserSession.loggedUser?.portifolio[i].amount != "0") {
+      currencies.push(
+        CurrencyController.getCurrencyByCode(
+          UserSession.loggedUser?.portifolio[i].code!
+        )!
+      );
     }
-    const currencies: CurrencyModel[] = [];
-    for (let i = 0; i < UserSession.loggedUser?.portifolio.length!; i++) {
-      if (UserSession.loggedUser?.portifolio[i].amount != "0") {
-        currencies.push(
-          CurrencyController.getCurrencyByCode(
-            UserSession.loggedUser?.portifolio[i].code!
-          )!
-        );
-      }
-    }
-    setMyCurrencies(currencies);
-    setSelectedCurrencyFrom(currencies[0]);
-    setBalance(UserSession.loggedUser?.getBalanceIn(currencies[0].code)!);
-    setMoneyToSend("");
-    setUsernameToSend("");
+  }
+  setMyCurrencies(currencies);
+  setSelectedCurrencyFrom(currencies[0]);
+  setBalance(UserSession.loggedUser?.getBalanceIn(currencies[0].code)!);
+  setMoneyToSend("");
+  setUsernameToSend("");
+  setIsPortfolioLoading(false);
+} catch(e){ 
+  setIsPortfolioLoading(false);
+}
+
+ 
   };
 
   const getRelatedTransactions = async () => {
@@ -184,8 +196,17 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
             <NoUserNameBox />
           </View>
         ) : (
-          <ScrollView>
-          { UserSession.loggedUser?.portifolio.length == 0 ? (<View     style={{
+          isPortfolioLoading ? (<View
+            style={{
+              height: 200,
+              alignContent: "center",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          ><PrimaryLoader /></View>) :
+          (<ScrollView>
+          { UserSession.loggedUser?.portifolio.length == 0 ? (
+          <View     style={{
               height: 200,
               alignContent: "center",
               alignItems: "center",
@@ -209,7 +230,6 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
                 containerStyle={{ width: 350 }}
                 value={usernameToSend}
               />
-
               {selectedCurrencyFrom !== undefined ? (
                 <DropDown
                   selectedCurrency={selectedCurrencyFrom}
@@ -253,14 +273,13 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
                 />
               </View>
             </View>)}
-          </ScrollView>
-        )}
+          </ScrollView>))}
       </View>
       <View style={styles.bottomContainer}>
         <ScrollView
           keyboardDismissMode="none"
           style={styles.transactionContainerScrollView}
-          contentContainerStyle={{ paddingBottom: tabBarHeight }}
+          contentContainerStyle={{ paddingBottom: tabBarHeight + UIScale.insets.bottom }}
         >
           {transactions.map((transaction, index) => (
             <TransactionContainer

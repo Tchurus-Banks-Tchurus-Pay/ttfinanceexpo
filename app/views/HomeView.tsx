@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     flex: 5,
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom: tabBarHeight,
+    paddingBottom: tabBarHeight + UIScale.insets.bottom,
   },
 });
 
