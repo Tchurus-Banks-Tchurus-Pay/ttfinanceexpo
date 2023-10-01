@@ -48,7 +48,8 @@
     "react-native-storage": "^1.0.1",
     "react-native-svg": "13.9.0",
     "react-native-url-polyfill": "^2.0.0",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "expo-updates": "~0.18.14"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
