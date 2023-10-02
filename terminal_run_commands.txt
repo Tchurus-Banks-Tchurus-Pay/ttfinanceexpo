@@ -9,8 +9,8 @@ cd android && ./gradlew clean
 ./gradlew bundleRelease
 
 cd android && ./gradlew clean
-react-native run-android --variant=release
-
+react-native run-android --mode=debug
+npx react-native run-android --list-devices
 npx react-native build-android --mode=release
 
 
