@@ -79,7 +79,6 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 
 android {
     ndkVersion rootProject.ext.ndkVersion
-
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     namespace "com.tt.financeapp"
@@ -99,6 +98,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+
+        release {
+            storeFile file('tbtp.keystore')
+            storePassword '123456'
+            keyAlias 'ttalias'
+            keyPassword '123456'
+        }
+
     }
     buildTypes {
         debug {
@@ -140,7 +147,6 @@ dependencies {
     implementation("com.facebook.react:react-android")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
     implementation("com.google.firebase:firebase-messaging:23.2.1")
-
 
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
