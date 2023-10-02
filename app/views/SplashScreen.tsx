@@ -1,31 +1,28 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ImageBackground, StyleSheet } from "react-native";
 
 const SplashScreen = () => {
   useEffect(() => {
-    // Coloque aqui qualquer lógica adicional que você queira executar durante o carregamento
-
-    // Por exemplo, você pode adicionar um temporizador para exibir a tela de splash por alguns segundos e, em seguida, navegar para a próxima tela.
     setTimeout(() => {
-      // Navegue para a próxima tela, por exemplo, a tela de login ou registro.
-      // Substitua 'navigation.navigate' pela navegação real que você está usando em seu aplicativo.
-      // navigation.navigate('login'); // Exemplo de navegação para a tela de login
-    }, 3000); // Tempo em milissegundos (3 segundos neste exemplo)
+    }, 3000);
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text>Entrando no Tchurus Banks Tchurus Pay</Text>
-    </View>
+    <ImageBackground
+      source={require('../../assets/splash.png')}
+      style={styles.backgroundImage}
+    >
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  backgroundImage: {
     flex: 1,
+    resizeMode: "cover",
     justifyContent: "center",
     alignItems: "center",
   },
-});
+})
 
 export default SplashScreen;

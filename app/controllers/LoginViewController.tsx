@@ -8,7 +8,7 @@ import { UserSession } from "../constants/UserSession";
 
 @injectable()
 export class LoginViewController {
-  title: string = "Login";
+  title: string = "Tchurus-Bank-Tchurus-Pay";
   loading: any;
   navigation: NavigationProp<any> | undefined;
 

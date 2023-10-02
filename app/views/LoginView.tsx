@@ -1,6 +1,6 @@
 import { NavigationProp } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
 import PrimaryTextField from "../components/PrimaryTextField";
 import colors from "../constants/Colors";
@@ -31,7 +31,15 @@ const LoginView: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.formContainer}>
-        <Text style={styles.title}>{controller.title}</Text>
+        <Image source={require("../../assets/tt-slogan-white.png")} style={
+          {
+            width: 250,
+            height: 100,
+            resizeMode: "contain",
+            alignSelf: "center",
+            marginBottom: 40,
+          }
+        }/>
         <PrimaryTextField
           placeholder="Email"
           onChangeText={(text) => setEmail(text)}
