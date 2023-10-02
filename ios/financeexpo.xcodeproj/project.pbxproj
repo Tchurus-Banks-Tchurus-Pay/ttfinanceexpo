@@ -27,6 +27,7 @@
 		2483BB132AC83779005B646B /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2483BB032AC83779005B646B /* EvilIcons.ttf */; };
 		2483BB142AC83779005B646B /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2483BB042AC83779005B646B /* Ionicons.ttf */; };
 		2483BB152AC83779005B646B /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2483BB052AC83779005B646B /* Feather.ttf */; };
+		24AEEAE92ACB080A0089F2FA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24AEEAE82ACB08090089F2FA /* Assets.xcassets */; };
 		24C0BB372AC70E4C00FC4F76 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 24C0BB362AC70E4C00FC4F76 /* main.jsbundle */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		96905EF65AED1B983A6B3ABC /* libPods-financeexpo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-financeexpo.a */; };
@@ -59,6 +60,7 @@
 		2483BB032AC83779005B646B /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
 		2483BB042AC83779005B646B /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ionicons.ttf; sourceTree = "<group>"; };
 		2483BB052AC83779005B646B /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
+		24AEEAE82ACB08090089F2FA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../assets/Assets.xcassets; sourceTree = "<group>"; };
 		24C0BB352AC6FEA700FC4F76 /* financeexpo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = financeexpo.entitlements; path = financeexpo/financeexpo.entitlements; sourceTree = "<group>"; };
 		24C0BB362AC70E4C00FC4F76 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		390F6A04D07D4DA490A44B55 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "financeexpo/noop-file.swift"; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				24AEEAE82ACB08090089F2FA /* Assets.xcassets */,
 				2483BAF52AC83716005B646B /* Fonts */,
 				24C0BB362AC70E4C00FC4F76 /* main.jsbundle */,
 				13B07FAE1A68108700A75B9A /* financeexpo */,
@@ -233,7 +236,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1250;
@@ -265,6 +268,7 @@
 			files = (
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				2483BB0E2AC83779005B646B /* Entypo.ttf in Resources */,
+				24AEEAE92ACB080A0089F2FA /* Assets.xcassets in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				2483BB0A2AC83779005B646B /* Zocial.ttf in Resources */,
 				2483BB082AC83779005B646B /* FontAwesome5_Regular.ttf in Resources */,
@@ -518,6 +522,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -581,6 +586,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
