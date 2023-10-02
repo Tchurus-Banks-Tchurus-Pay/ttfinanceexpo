@@ -37,7 +37,7 @@ const LoginView: React.FC<Props> = ({ navigation }) => {
             height: 100,
             resizeMode: "contain",
             alignSelf: "center",
-            marginBottom: 40,
+            marginBottom: 50,
           }
         }/>
         <PrimaryTextField
