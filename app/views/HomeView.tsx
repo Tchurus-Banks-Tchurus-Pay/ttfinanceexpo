@@ -94,7 +94,7 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
       </View>
 
       {loading == false ? (
-        <View style={styles.secondContainer}>
+        <View style={[styles.secondContainer, {  paddingBottom: tabBarHeight + UIScale.insets.bottom,}]}>
           <ScrollView>
             {portfolio.map((item, index) => (
               <MyCurrencyContainer
@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
     flex: 5,
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom: tabBarHeight + UIScale.insets.bottom,
   },
 });
 
