@@ -106,7 +106,7 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
           </ScrollView>
         </View>
       ) : (
-        <View style={styles.secondContainer}>
+        <View style={[styles.secondContainer, {  paddingBottom: tabBarHeight + UIScale.insets.bottom,}]}>
           <PrimaryLoader />
         </View>
       )}
@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
     flex: 5,
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom: tabBarHeight + UIScale.insets.bottom,
   },
 });
 
