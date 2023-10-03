@@ -12,30 +12,34 @@ interface Props {
   callback?: () => void;
 }
 
-const PrimaryHeader: React.FC<Props> = ({ title, hasBackButton = false, iconName, callback }) => {
+const PrimaryHeader: React.FC<Props> = ({
+  title,
+  hasBackButton = false,
+  iconName,
+  callback,
+}) => {
   const navigation = useNavigation();
 
   const handleBackButtonPress = () => {
     navigation.goBack();
   };
 
-  if(iconName){
+  if (iconName) {
     return (
       <View
-      style={[
-        styles.header,
-        { backgroundColor: "#2b2c3e", marginTop: UIScale.insets.top },
-      ]}
-    >
-        <Text
-          style={styles.headerText}
-        >
-          {title}
-        </Text>
+        style={[
+          styles.header,
+          {
+            backgroundColor: "#2b2c3e",
+            marginTop: UIScale.insets.top + UIScale.statusBarHeight,
+          },
+        ]}
+      >
+        <Text style={styles.headerText}>{title}</Text>
         <TouchableOpacity onPress={callback}>
-        <Ionicons name="settings" size={24} color="#ffffff" />
+          <Ionicons name="settings" size={24} color="#ffffff" />
         </TouchableOpacity>
-        </View>
+      </View>
     );
   }
 
@@ -43,7 +47,10 @@ const PrimaryHeader: React.FC<Props> = ({ title, hasBackButton = false, iconName
     <View
       style={[
         styles.header,
-        { backgroundColor: "#2b2c3e", marginTop: UIScale.insets.top },
+        {
+          backgroundColor: "#2b2c3e",
+          marginTop: UIScale.insets.top + UIScale.statusBarHeight,
+        },
       ]}
     >
       {hasBackButton ? (

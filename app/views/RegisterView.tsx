@@ -27,6 +27,8 @@ const RegisterView: React.FC<Props> = ({ navigation }) => {
         <PrimaryTextField
           placeholder="Email"
           onChangeText={(text) => setEmail(text)}
+          keyboardType="email-address"
+          value={email}
         />
         <PrimaryTextField
           placeholder="Senha"

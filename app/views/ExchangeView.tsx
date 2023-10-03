@@ -1,15 +1,21 @@
 import { NavigationProp } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import {
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import DropDown from "../components/CurrencyDropdown";
 import PrimaryButton from "../components/PrimaryButton";
+import PrimaryHeader from "../components/PrimaryHeader";
 import PrimaryTextField from "../components/PrimaryTextField";
 import colors from "../constants/Colors";
 import {
   CurrencyController,
   CurrencyModel,
 } from "../constants/CurrencyController";
-import { UIScale } from "../constants/UIScale";
 
 interface Props {
   navigation: NavigationProp<any>;
@@ -23,7 +29,6 @@ const ExchangeView: React.FC<Props> = ({ navigation }) => {
   const [selectedCurrencyTo, setSelectedCurrencyTo] = useState<CurrencyModel>(
     CurrencyController.currencies[1]
   );
-
 
   const handleCurrencyChangeFrom = (currency: CurrencyModel) => {
     setSelectedCurrencyFrom(currency);
@@ -53,48 +58,46 @@ const ExchangeView: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.header, { backgroundColor: "#2b2c3e",  marginTop: UIScale.insets.top }]}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.headerText}>Câmbio</Text>
-        </View>
-      </View>
-      <View style={styles.contentContainer}>
-        <View style={[styles.topContainer, { backgroundColor: "#2b2c3e" }]}>
-          <DropDown
-            selectedCurrency={selectedCurrencyFrom}
-            onCurrencyChange={handleCurrencyChangeFrom}
-            labelText="Converter de:"
-          />
-          <DropDown
-            selectedCurrency={selectedCurrencyTo}
-            onCurrencyChange={handleCurrencyChangeTo}
-            labelText="para:"
-          />
-          <View style={styles.inputContainer}>
-            <Text style={styles.currencySymbol}>
-              {selectedCurrencyFrom.symbol}
-            </Text>
-            <PrimaryTextField
-              placeholder="Valor a ser convertido"
-              onChangeText={handleTextChange}
-              keyboardType="numeric"
-              style={styles.inputField}
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <PrimaryHeader title="Câmbio" />
+        <View style={styles.contentContainer}>
+          <View style={[styles.topContainer, { backgroundColor: "#2b2c3e" }]}>
+            <DropDown
+              selectedCurrency={selectedCurrencyFrom}
+              onCurrencyChange={handleCurrencyChangeFrom}
+              labelText="Converter de:"
             />
+            <DropDown
+              selectedCurrency={selectedCurrencyTo}
+              onCurrencyChange={handleCurrencyChangeTo}
+              labelText="para:"
+            />
+            <View style={styles.inputContainer}>
+              <Text style={styles.currencySymbol}>
+                {selectedCurrencyFrom.symbol}
+              </Text>
+              <PrimaryTextField
+                placeholder="Valor a ser convertido"
+                onChangeText={handleTextChange}
+                keyboardType="numeric"
+                style={styles.inputField}
+              />
+            </View>
+            <View style={{ width: 350 }}>
+              <PrimaryButton title="Converter" onPress={() => convert()} />
+            </View>
           </View>
-          <View style={{ width: 350 }}>
-            <PrimaryButton title="Converter" onPress={() => convert()} />
+          <View style={styles.bottomContainer}>
+            <Text style={styles.convertedText}>Valor Convertido:</Text>
+            <Text style={styles.convertedValueText}>
+              {selectedCurrencyTo.symbol + " "}
+              {convertedValue}
+            </Text>
           </View>
-        </View>
-        <View style={styles.bottomContainer}>
-          <Text style={styles.convertedText}>Valor Convertido:</Text>
-          <Text style={styles.convertedValueText}>
-            {selectedCurrencyTo.symbol + " "}
-            {convertedValue}
-          </Text>
         </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -170,4 +173,3 @@ const styles = StyleSheet.create({
 });
 
 export default ExchangeView;
-

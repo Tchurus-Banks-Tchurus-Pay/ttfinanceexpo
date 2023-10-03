@@ -30,7 +30,9 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   const [moneyToSend, setMoneyToSend] = useState<string>("");
   const [usernameToSend, setUsernameToSend] = useState<string>("");
   const [balance, setBalance] = useState<string>("");
-  const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
+  const [isUsernameNotEmpty, setIsUsernameNotEmpty] = useState<boolean>(false);
+  const [isMoneyToSendNotEmpty, setIsMoneyToSendNotEmpty] =
+    useState<boolean>(false);
   const [transactions, setTransactions] = useState<TransactionContainerProps[]>(
     []
   );
@@ -38,10 +40,11 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   const [isPortfolioLoading, setIsPortfolioLoading] = useState<boolean>(true);
   const [selectedCurrencyFrom, setSelectedCurrencyFrom] =
     useState<CurrencyModel>(
-      UserSession.loggedUser?.portifolio.length == 0 ? CurrencyController.getCurrencyByCode("USD")! :
-      CurrencyController.getCurrencyByCode(
-        UserSession.loggedUser?.portifolio[0].code!
-      )!
+      UserSession.loggedUser?.portifolio.length == 0
+        ? CurrencyController.getCurrencyByCode("USD")!
+        : CurrencyController.getCurrencyByCode(
+            UserSession.loggedUser?.portifolio[0].code!
+          )!
     );
 
   React.useEffect(() => {
@@ -50,42 +53,40 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   }, []);
 
   const handleCurrencyChangeFrom = (currency: CurrencyModel) => {
-    if( UserSession.loggedUser?.portifolio.length == 0){
+    if (UserSession.loggedUser?.portifolio.length == 0) {
       setBalance("0");
       return;
-    } 
+    }
     setSelectedCurrencyFrom(currency);
     setBalance(UserSession.loggedUser?.getBalanceIn(currency.code)!);
   };
 
   const getMyPortfolioCurrencies = async () => {
-
-try{   setIsPortfolioLoading(true);
-  if( UserSession.loggedUser?.portifolio.length == 0){
-    setIsPortfolioLoading(false);
-    return;
-  }
-  const currencies: CurrencyModel[] = [];
-  for (let i = 0; i < UserSession.loggedUser?.portifolio.length!; i++) {
-    if (UserSession.loggedUser?.portifolio[i].amount != "0") {
-      currencies.push(
-        CurrencyController.getCurrencyByCode(
-          UserSession.loggedUser?.portifolio[i].code!
-        )!
-      );
+    try {
+      setIsPortfolioLoading(true);
+      if (UserSession.loggedUser?.portifolio.length == 0) {
+        setIsPortfolioLoading(false);
+        return;
+      }
+      const currencies: CurrencyModel[] = [];
+      for (let i = 0; i < UserSession.loggedUser?.portifolio.length!; i++) {
+        if (UserSession.loggedUser?.portifolio[i].amount != "0") {
+          currencies.push(
+            CurrencyController.getCurrencyByCode(
+              UserSession.loggedUser?.portifolio[i].code!
+            )!
+          );
+        }
+      }
+      setMyCurrencies(currencies);
+      setSelectedCurrencyFrom(currencies[0]);
+      setBalance(UserSession.loggedUser?.getBalanceIn(currencies[0].code)!);
+      setMoneyToSend("");
+      setUsernameToSend("");
+      setIsPortfolioLoading(false);
+    } catch (e) {
+      setIsPortfolioLoading(false);
     }
-  }
-  setMyCurrencies(currencies);
-  setSelectedCurrencyFrom(currencies[0]);
-  setBalance(UserSession.loggedUser?.getBalanceIn(currencies[0].code)!);
-  setMoneyToSend("");
-  setUsernameToSend("");
-  setIsPortfolioLoading(false);
-} catch(e){ 
-  setIsPortfolioLoading(false);
-}
-
- 
   };
 
   const getRelatedTransactions = async () => {
@@ -113,24 +114,6 @@ try{   setIsPortfolioLoading(true);
 
   CallbackTrigger.addCallback("get-portfolio", getMyPortfolioCurrencies);
   CallbackTrigger.addCallback("get-transactions", getRelatedTransactions);
-
-  const handleMoneyChange = (text: string) => {
-    setMoneyToSend(text);
-    verifyIfButtonIsEnable();
-  };
-
-  const handleUsernameChange = (text: string) => {
-    setUsernameToSend(text);
-    verifyIfButtonIsEnable();
-  };
-
-  const verifyIfButtonIsEnable = () => {
-    if (usernameToSend != "" && moneyToSend != "") {
-      setIsButtonEnabled(true);
-    } else {
-      setIsButtonEnabled(false);
-    }
-  }
 
   const sendMoney = async () => {
     const hasMoney =
@@ -180,6 +163,24 @@ try{   setIsPortfolioLoading(true);
     }
   };
 
+  const handleMoneyChange = (text: string) => {
+    if (text != "") {
+      setIsMoneyToSendNotEmpty(true);
+    } else {
+      setIsMoneyToSendNotEmpty(false);
+    }
+    setMoneyToSend(text);
+  };
+
+  const handleUsernameChange = (text: string) => {
+    if (text != "") {
+      setIsUsernameNotEmpty(true);
+    } else {
+      setIsUsernameNotEmpty(false);
+    }
+    setUsernameToSend(text);
+  };
+
   return (
     <View style={styles.container}>
       <PrimaryHeader title="Movimentações" />
@@ -195,91 +196,111 @@ try{   setIsPortfolioLoading(true);
           >
             <NoUserNameBox />
           </View>
-        ) : (
-          isPortfolioLoading ? (<View
+        ) : isPortfolioLoading ? (
+          <View
             style={{
               height: 200,
               alignContent: "center",
               alignItems: "center",
               justifyContent: "center",
             }}
-          ><PrimaryLoader /></View>) :
-          (<ScrollView>
-          { UserSession.loggedUser?.portifolio.length == 0 ? (
-          <View     style={{
-              height: 200,
-              alignContent: "center",
-              alignItems: "center",
-              justifyContent: "center",
-            }}> 
-            <Text style={styles.convertedValueText}>Você não possui moedas!</Text>
-          </View>) : (
-            <View
-              style={{
-                alignItems: "center",
-                alignContent: "center",
-                alignSelf: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text style={styles.convertedValueText}>Enviar para:</Text>
-              <PrimaryTextField
-                placeholder="Digite o usuário:"
-                onChangeText={handleUsernameChange}
-                style={styles.inputField}
-                containerStyle={{ width: 350 }}
-                value={usernameToSend}
-              />
-              {selectedCurrencyFrom !== undefined ? (
-                <DropDown
-                  selectedCurrency={selectedCurrencyFrom}
-                  onCurrencyChange={handleCurrencyChangeFrom}
-                  labelText="Selecione a moeda:"
-                  currencies={myCurrencies}
-                />
-              ) : (
-                <Text style={styles.loadingText}>Carregando...</Text>
-              )}
-              {selectedCurrencyFrom !== undefined ? (
-                <View style={{marginVertical: 7}}>
-                <Text style={styles.balanceText}>
-                  Saldo: {balance} {selectedCurrencyFrom.name}
+          >
+            <PrimaryLoader />
+          </View>
+        ) : (
+          <ScrollView>
+            {UserSession.loggedUser?.portifolio.length == 0 ? (
+              <View
+                style={{
+                  height: 200,
+                  alignContent: "center",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={styles.convertedValueText}>
+                  Você não possui moedas!
                 </Text>
-                </View>
-              ) : (
-                <Text style={styles.loadingText}>Carregando...</Text>
-              )}
-              <View style={styles.inputContainer}>
-                <Text style={styles.currencySymbol}>
-                  {selectedCurrencyFrom != undefined
-                    ? selectedCurrencyFrom!.symbol
-                    : ""}
-                </Text>
+              </View>
+            ) : (
+              <View
+                style={{
+                  alignItems: "center",
+                  alignContent: "center",
+                  alignSelf: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={styles.convertedValueText}>Enviar para:</Text>
                 <PrimaryTextField
-                  placeholder="Valor a Enviar"
-                  onChangeText={handleMoneyChange}
-                  keyboardType="numeric"
+                  placeholder="Digite o usuário:"
+                  onChangeText={handleUsernameChange}
                   style={styles.inputField}
-                  value={moneyToSend}
+                  containerStyle={{ width: 350 }}
+                  value={usernameToSend}
                 />
+                {selectedCurrencyFrom !== undefined ? (
+                  <DropDown
+                    selectedCurrency={selectedCurrencyFrom}
+                    onCurrencyChange={handleCurrencyChangeFrom}
+                    labelText="Selecione a moeda:"
+                    currencies={myCurrencies}
+                  />
+                ) : (
+                  <Text style={styles.loadingText}>Carregando...</Text>
+                )}
+                {selectedCurrencyFrom !== undefined ? (
+                  <View style={{ marginVertical: 7 }}>
+                    <Text
+                      style={[
+                        styles.balanceText,
+                        {
+                          paddingTop: 15,
+                          paddingBottom: 8,
+                        },
+                      ]}
+                    >
+                      Saldo: {balance} {selectedCurrencyFrom.name}
+                    </Text>
+                  </View>
+                ) : (
+                  <Text style={styles.loadingText}>Carregando...</Text>
+                )}
+                <View style={styles.inputContainer}>
+                  <Text style={styles.currencySymbol}>
+                    {selectedCurrencyFrom != undefined
+                      ? selectedCurrencyFrom!.symbol
+                      : ""}
+                  </Text>
+                  <PrimaryTextField
+                    placeholder="Valor a Enviar"
+                    onChangeText={handleMoneyChange}
+                    keyboardType="numeric"
+                    style={styles.inputField}
+                    value={moneyToSend}
+                  />
+                </View>
+                <View style={{ width: 350, paddingBottom: 10 }}>
+                  <PrimaryButton
+                    disabled={!(isMoneyToSendNotEmpty && isUsernameNotEmpty)}
+                    title="Enviar"
+                    onPress={() => {
+                      sendMoney();
+                    }}
+                  />
+                </View>
               </View>
-              <View style={{ width: 350, paddingBottom: 10 }}>
-                <PrimaryButton
-                  disabled={!isButtonEnabled}
-                  title="Enviar"
-                  onPress={() => {
-                    sendMoney();
-                  }}
-                />
-              </View>
-            </View>)}
-          </ScrollView>))}
+            )}
+          </ScrollView>
+        )}
       </View>
       <View style={styles.bottomContainer}>
         <ScrollView
           keyboardDismissMode="none"
           style={styles.transactionContainerScrollView}
-          contentContainerStyle={{ paddingBottom: tabBarHeight + UIScale.insets.bottom }}
+          contentContainerStyle={{
+            paddingBottom: tabBarHeight + UIScale.insets.bottom,
+          }}
         >
           {transactions.map((transaction, index) => (
             <TransactionContainer
@@ -349,6 +370,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingEnd: 71,
     paddingStart: 60,
+    paddingBottom: 10,
   },
   currencySymbol: {
     fontSize: 24,

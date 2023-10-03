@@ -4,6 +4,7 @@ import { Session } from "@supabase/supabase-js";
 import { useFonts } from "expo-font";
 import { Provider } from "inversify-react";
 import React, { useEffect, useState } from "react";
+import { StatusBar } from "react-native";
 import "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import container from "./app/constants/Inversify";
@@ -52,6 +53,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
+      <StatusBar animated={true} backgroundColor="#61dafb" hidden={true} />
       <Provider container={container}>
         <NavigationContainer>
           {session && session.user ? <MyStack2 /> : <MyStack />}
