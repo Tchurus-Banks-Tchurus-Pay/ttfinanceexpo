@@ -21,6 +21,8 @@ export default function RootView() {
       screenOptions={{
         tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: "#ffffff",
+        headerTintColor: "#2b2c3e",
+        headerTransparent: true,
         headerShown: false,
         tabBarStyle: {
           height: tabBarHeight + UIScale.insets.bottom,

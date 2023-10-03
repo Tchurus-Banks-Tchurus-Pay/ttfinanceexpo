@@ -1,18 +1,17 @@
 export const tabBarHeight = 50;
-
 export const currencyColors = {
   AUD: "#FF5733", // Laranja
   BGN: "#33FF57", // Verde
-  BRL: "#33A9FF", // Azul-claro
-  CAD: "#FF33A9", // Rosa-claro
-  CHF: "#FF33F0", // Rosa
+  BRL: "#33A9FF", // Azul
+  CAD: "#FF33A9", // Rosa
+  CHF: "#FF33F0", // Rosa forte
   CNY: "#F033FF", // Roxo
   CZK: "#FFFF33", // Amarelo
   DKK: "#33FFC5", // Verde-claro
   EUR: "#33C5FF", // Azul-claro
   GBP: "#A933FF", // Roxo-claro
   HKD: "#33FF59", // Verde-claro
-  HRK: "#33FF33", // Verde-claro
+  HRK: "#33FF33", // Verde
   HUF: "#FFD033", // Amarelo-claro
   IDR: "#33D0FF", // Azul-claro
   ILS: "#D033FF", // Roxo-claro
@@ -32,6 +31,6 @@ export const currencyColors = {
   SGD: "#A9FF33", // Verde-claro
   THB: "#FF9955", // Laranja-claro
   TRY: "#9955FF", // Azul-claro
-  USD: "#FF33FF", // Rosa-claro
+  USD: "#800000", // Rosa-claro
   ZAR: "#33FFFF", // Ciano-claro
 };

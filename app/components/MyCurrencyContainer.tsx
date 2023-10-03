@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import colors from "../constants/Colors";
 import { CurrencyController } from "../constants/CurrencyController";
 import { UIScale } from "../constants/UIScale";
+import { UserSession } from "../constants/UserSession";
+import UIText from "./UIText";
 
 interface MyCurrencyContainerProps {
   code: string;
@@ -14,19 +16,35 @@ const MyCurrencyContainer: React.FC<MyCurrencyContainerProps> = ({
   amount,
 }) => {
   const currency = CurrencyController.getCurrencyByCode(code);
+  const amountConvertedToMainCurrency = CurrencyController.convertCurrency(
+    code,
+    UserSession.loggedUser!.mainCurrency,
+    amount
+  );
 
-  console.log(amount);
   return (
     <View style={[styles.container, { width: UIScale.deviceWidth }]}>
       <View style={styles.leftContainer}>
-        <View style={[styles.circle, {backgroundColor: colors.secondaryBackground}]}>
-          <Text style={[styles.currencyCode, {color: currency?.color}]}>{code}</Text>
+        <View
+          style={[
+            styles.circle,
+            { backgroundColor: colors.secondaryBackground },
+          ]}
+        >
+          <Text style={[styles.currencyCode, { color: currency?.color }]}>
+            {code}
+          </Text>
         </View>
         <Text style={styles.currencyName}>{currency?.name}</Text>
       </View>
       <View style={styles.rightContainer}>
-        <Text style={styles.currencySymbol}>{currency?.symbol}</Text>
-        <Text style={styles.currencyAmount}>{amount}</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Text style={styles.currencySymbol}>{currency?.symbol}</Text>
+          <Text style={styles.currencyAmount}>{amount}</Text>
+        </View>
+        <UIText style={styles.additionalText}>
+          {amountConvertedToMainCurrency} {UserSession.loggedUser!.mainCurrency}
+        </UIText>
       </View>
     </View>
   );
@@ -63,7 +81,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   rightContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
   },
   currencySymbol: {
@@ -74,6 +92,11 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     fontSize: 18,
     color: "#fff",
+  },
+  additionalText: {
+    marginLeft: 4,
+    fontSize: 11,
+    color: "#81828c",
   },
 });
 

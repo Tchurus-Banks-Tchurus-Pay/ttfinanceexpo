@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import ModalDropdown from 'react-native-modal-dropdown';
+import ModalDropdown from "react-native-modal-dropdown";
 import { UIColors } from "../constants/Colors";
 import {
   CurrencyController,
@@ -20,7 +20,15 @@ const DropDown: React.FC<DropDownProps> = ({
   labelText,
   currencies = CurrencyController.currencies, // Valor padrão
 }) => {
-  const data = currencies.map((currency) => `${currency.name} (${currency.code})`);
+  const data = currencies.map(
+    (currency) => `${currency.name} (${currency.code})`
+  );
+
+  const initialScrollIndex = selectedCurrency
+    ? currencies.findIndex(
+        (currency) => currency.code === selectedCurrency.code
+      )
+    : 0;
 
   return (
     <View style={styles.container}>
@@ -28,21 +36,32 @@ const DropDown: React.FC<DropDownProps> = ({
       <View style={styles.pickerContainer}>
         <ModalDropdown
           options={data}
+          defaultIndex={initialScrollIndex}
           onSelect={(index) => onCurrencyChange(currencies[Number(index)])}
           defaultValue={`${selectedCurrency?.name} (${selectedCurrency?.code})`}
           textStyle={{ color: UIColors.primaryText, fontFamily: "Poppins" }}
-          dropdownStyle={{ backgroundColor: UIColors.secondaryBackground, width: 300, borderWidth: 0, borderRadius: 10, height: 200, marginStart: -11 }}
+          dropdownStyle={{
+            backgroundColor: UIColors.secondaryBackground,
+            width: 300,
+            borderWidth: 0,
+            borderRadius: 10,
+            height: 200,
+            marginStart: -11,
+          }}
           renderRow={(rowData, rowID, highlighted) => (
             <View
               style={{
-                backgroundColor: highlighted ? UIColors.primaryBackground : UIColors.secondaryBackground,
+                backgroundColor: highlighted
+                  ? UIColors.primaryBackground
+                  : UIColors.secondaryBackground,
                 padding: 10,
                 height: 50,
-                borderRadius: 10,
                 justifyContent: "center",
               }}
             >
-              <Text style={{ color: UIColors.primaryText, fontFamily: "Poppins" }}>
+              <Text
+                style={{ color: UIColors.primaryText, fontFamily: "Poppins" }}
+              >
                 {rowData}
               </Text>
             </View>

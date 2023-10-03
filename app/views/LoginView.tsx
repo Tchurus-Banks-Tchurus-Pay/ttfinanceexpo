@@ -31,18 +31,21 @@ const LoginView: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.formContainer}>
-        <Image source={require("../../assets/tt-slogan-white.png")} style={
-          {
+        <Image
+          source={require("../../assets/tt-slogan-white.png")}
+          style={{
             width: 250,
             height: 100,
             resizeMode: "contain",
             alignSelf: "center",
             marginBottom: 50,
-          }
-        }/>
+          }}
+        />
         <PrimaryTextField
           placeholder="Email"
           onChangeText={(text) => setEmail(text)}
+          keyboardType="email-address"
+          value={email}
         />
         <PrimaryTextField
           placeholder="Senha"

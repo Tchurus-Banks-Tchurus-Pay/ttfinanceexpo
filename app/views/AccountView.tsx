@@ -89,7 +89,11 @@ const AccountView: React.FC<Props> = ({ navigation }) => {
           onCurrencyChange={handleCurrencyChangeTo}
           labelText="Altere aqui sua moeda principal:"
         />
-        <PrimaryButton title="Salvar" onPress={updateMainCurrency} />
+        <PrimaryButton
+          title="Salvar"
+          onPress={updateMainCurrency}
+          containerStyle={{ marginTop: 32 }}
+        />
       </View>
 
       {username != "" ? (

@@ -15,7 +15,7 @@ interface Props {
   isPassword?: boolean;
   style?: TextStyle;
   containerStyle?: ViewStyle;
-  keyboardType?: "default" | "numeric";
+  keyboardType?: "default" | "numeric" | "email-address";
   value?: string;
 }
 
@@ -40,6 +40,9 @@ const PrimaryTextField: React.FC<Props> = ({
       if (regex.test(text)) {
         onChangeText(text);
       }
+    } else if (keyboardType === "email-address") {
+      const trimmedText = text.replace(/\s/g, "");
+      onChangeText(trimmedText);
     } else {
       onChangeText(text);
     }
@@ -57,6 +60,7 @@ const PrimaryTextField: React.FC<Props> = ({
         underlineColorAndroid="transparent"
         cursorColor={"#fff"}
         keyboardType={keyboardType}
+        autoCapitalize="none"
       />
       {isPassword && (
         <TouchableOpacity
