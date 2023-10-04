@@ -18,6 +18,13 @@ export class Initialization {
     await this.requestUserPermission();
     await this.checkToken();
     await PushNotificationsHandler.registerToken();
+
+    messaging().onNotificationOpenedApp(async (remoteMessage) => {
+      console.log(JSON.stringify(remoteMessage));
+      await CallbackTrigger.triggerCallback("get-portfolio");
+      await CallbackTrigger.triggerCallback("update-home-view");
+      await CallbackTrigger.triggerCallback("get-transactions");
+    });
   }
 
   static async requestUserPermission() {

@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { UserCompletePortfolio } from "../model/UserModel";
 import { currencyColors } from "./Constants";
 
 export class CurrencyController {
@@ -29,6 +30,26 @@ export class CurrencyController {
     } else {
       return "0.00";
     }
+  }
+
+  static convertPortfolioToCurrency(
+    currencyCode: string,
+    portfolio: UserCompletePortfolio[]
+  ): UserCompletePortfolio[] {
+    let completePortfolioConverted: UserCompletePortfolio[] = [];
+
+    portfolio.forEach((item) => {
+      completePortfolioConverted.push({
+        currency: CurrencyController.getCurrencyByCode(item.currency.code)!,
+        amount: this.convertCurrency(
+          item.currency.code,
+          currencyCode,
+          item.amount
+        ),
+      });
+    });
+
+    return completePortfolioConverted;
   }
 
   static convertAllCurrenciesAndGetTotal(
@@ -206,7 +227,7 @@ export class CurrencyController {
     }
   }
 
-  public static getCurrencyColorByCode(code: string) : String {
+  public static getCurrencyColorByCode(code: string): String {
     return currencyColors[code as keyof typeof currencyColors];
   }
 
