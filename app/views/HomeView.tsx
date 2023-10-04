@@ -1,11 +1,7 @@
 import { NavigationProp } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  View
-} from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import MyCurrencyContainer from "../components/MyCurrencyContainer";
 import NoUserNameBox from "../components/NoUsernameBox";
 import PortifolioGraph from "../components/PortifolioGraph";
@@ -76,7 +72,12 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
             <Ionicons name="settings" size={24} color="#ffffff" />
           </TouchableOpacity>
         </View> */}
-        <PrimaryHeader title="Portfolio" hasBackButton={false} iconName="settings" callback={goToSettings} />
+        <PrimaryHeader
+          title="Portfolio"
+          hasBackButton={false}
+          iconName="settings"
+          callback={goToSettings}
+        />
       </View>
 
       <View style={styles.graphContainer}>
@@ -94,7 +95,12 @@ const HomeView: React.FC<Props> = ({ navigation }) => {
       </View>
 
       {loading == false ? (
-        <View style={[styles.secondContainer, {  paddingBottom: tabBarHeight + UIScale.insets.bottom,}]}>
+        <View
+          style={[
+            styles.secondContainer,
+            { paddingBottom: tabBarHeight + UIScale.insets.bottom },
+          ]}
+        >
           <ScrollView>
             {portfolio.map((item, index) => (
               <MyCurrencyContainer
@@ -161,6 +167,7 @@ export function HomeViewStack() {
       <Stack.Screen name="settings" component={SettingsView} />
       <Stack.Screen name="account" component={AccountView} />
       <Stack.Screen name="currencies-to-like" component={CurrenciesToLike} />
+      <Stack.Screen name="add-money" component={CurrenciesToLike} />
     </Stack.Navigator>
   );
 }

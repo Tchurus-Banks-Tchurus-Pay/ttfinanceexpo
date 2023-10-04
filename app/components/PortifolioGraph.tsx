@@ -4,6 +4,7 @@ import { Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import PieChart from "react-native-pie-chart";
 import colors from "../constants/Colors";
+import { CurrencyController } from "../constants/CurrencyController";
 import { UserSession } from "../constants/UserSession";
 import { UserCompletePortfolio } from "../model/UserModel";
 
@@ -13,12 +14,16 @@ interface PortifolioGraphProps {
 
 const PortifolioGraph: React.FC<PortifolioGraphProps> = ({ portfolio }) => {
   const widthAndHeight = 230;
-  const filteredPortfolio = portfolio.filter(
+  const convertedPortfolio = CurrencyController.convertPortfolioToCurrency(
+    UserSession.loggedUser?.mainCurrency!,
+    portfolio
+  );
+
+  const filteredPortfolio = convertedPortfolio.filter(
     (item) => Number(item.amount) != 0
   );
   const series = filteredPortfolio.map((item) => Number(item.amount));
   const sliceColor = filteredPortfolio.map((item) => item.currency.color);
-
   const mainCurrency = UserSession.loggedUser?.getMainCurrencyModel();
   const totalValue =
     UserSession.loggedUser?.getPortifolioTotalValueInMainCurrency();

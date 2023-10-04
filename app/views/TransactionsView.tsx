@@ -31,6 +31,7 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   const [usernameToSend, setUsernameToSend] = useState<string>("");
   const [balance, setBalance] = useState<string>("");
   const [isUsernameNotEmpty, setIsUsernameNotEmpty] = useState<boolean>(false);
+  const [isButtonloading, setIsButtonLoading] = useState<boolean>(false);
   const [isMoneyToSendNotEmpty, setIsMoneyToSendNotEmpty] =
     useState<boolean>(false);
   const [transactions, setTransactions] = useState<TransactionContainerProps[]>(
@@ -116,6 +117,7 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   CallbackTrigger.addCallback("get-transactions", getRelatedTransactions);
 
   const sendMoney = async () => {
+    setIsButtonLoading(true);
     const hasMoney =
       await UserSession.loggedUser?.verifyIfUserHasThisAmountInThis(
         moneyToSend,
@@ -131,12 +133,13 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
       });
 
       if (error) {
+        setIsButtonLoading(false);
         Alert.alert(error.message);
       } else {
         Alert.alert("Transferência realizada com sucesso!");
         await PushNotificationsHandler.sendPushNotification(
           usernameToSend,
-          "Você recebeu uma quantia de " + UserSession.loggedUser?.username!,
+          UserSession.loggedUser?.username! + " te enviou uma grana!",
           "Você acabou de receber " +
             moneyToSend +
             " " +
@@ -155,6 +158,7 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
         setMoneyToSend("");
         setUsernameToSend("");
         getRelatedTransactions();
+        setIsButtonLoading(false);
       }
     } else {
       Alert.alert("Usuário não possui essa quantia nessa moeda! Pobre!");
@@ -229,9 +233,15 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
                   alignContent: "center",
                   alignSelf: "center",
                   justifyContent: "center",
+                  paddingBottom: 10,
+                  paddingTop: 10,
                 }}
               >
-                <Text style={styles.convertedValueText}>Enviar para:</Text>
+                <Text
+                  style={[styles.convertedValueText, { paddingBottom: 12 }]}
+                >
+                  Enviar para:
+                </Text>
                 <PrimaryTextField
                   placeholder="Digite o usuário:"
                   onChangeText={handleUsernameChange}
@@ -282,7 +292,10 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
                 </View>
                 <View style={{ width: 350, paddingBottom: 10 }}>
                   <PrimaryButton
-                    disabled={!(isMoneyToSendNotEmpty && isUsernameNotEmpty)}
+                    disabled={
+                      !(isMoneyToSendNotEmpty && isUsernameNotEmpty) ||
+                      isButtonloading
+                    }
                     title="Enviar"
                     onPress={() => {
                       sendMoney();

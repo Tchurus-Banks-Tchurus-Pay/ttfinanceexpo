@@ -53,7 +53,9 @@ export class PushNotificationsHandler {
           title: title,
           body: body,
           icon: "https://placeimg.com/250/250/people",
+          sound: "default",
         },
+        priority: "high",
       }),
     });
     const data = await response.json();
