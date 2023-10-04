@@ -16,6 +16,7 @@ import { UIScale } from "../constants/UIScale";
 import { UserSession } from "../constants/UserSession";
 import { UserCompletePortfolio } from "../model/UserModel";
 import AccountView from "./AccountView";
+import AddMoneyView from "./AddMoneyView";
 import CurrenciesToLike from "./CurrenciesToLike";
 import SettingsView from "./SettingsView";
 
@@ -167,7 +168,7 @@ export function HomeViewStack() {
       <Stack.Screen name="settings" component={SettingsView} />
       <Stack.Screen name="account" component={AccountView} />
       <Stack.Screen name="currencies-to-like" component={CurrenciesToLike} />
-      <Stack.Screen name="add-money" component={CurrenciesToLike} />
+      <Stack.Screen name="add-money" component={AddMoneyView} />
     </Stack.Navigator>
   );
 }
