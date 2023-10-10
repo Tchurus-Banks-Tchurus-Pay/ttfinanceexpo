@@ -1,12 +1,14 @@
 import { NavigationProp } from "@react-navigation/native";
 import React, { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 import DropDown from "../components/CurrencyDropdown";
 import NoUserNameBox from "../components/NoUsernameBox";
 import PrimaryButton from "../components/PrimaryButton";
 import PrimaryHeader from "../components/PrimaryHeader";
 import PrimaryLoader from "../components/PrimaryLoader";
 import PrimaryTextField from "../components/PrimaryTextField";
+import SearchUsernameDropdown from "../components/SearchUsernameDropdown";
 import TransactionContainer, {
   TransactionContainerProps,
 } from "../components/TransactionContainer";
@@ -21,7 +23,6 @@ import { PushNotificationsHandler } from "../constants/PushNotificationsHandler"
 import { supabase } from "../constants/Supabase";
 import { UIScale } from "../constants/UIScale";
 import { UserSession } from "../constants/UserSession";
-
 interface Props {
   navigation: NavigationProp<any>;
 }
@@ -186,147 +187,141 @@ const TransactionsView: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <PrimaryHeader title="Movimentações" />
-      <View>
-        {UserSession.loggedUser!.username == "" ? (
-          <View
-            style={{
-              height: 200,
-              alignContent: "center",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <NoUserNameBox />
-          </View>
-        ) : isPortfolioLoading ? (
-          <View
-            style={{
-              height: 200,
-              alignContent: "center",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <PrimaryLoader />
-          </View>
-        ) : (
-          <ScrollView>
-            {UserSession.loggedUser?.portifolio.length == 0 ? (
-              <View
-                style={{
-                  height: 200,
-                  alignContent: "center",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Text style={styles.convertedValueText}>
-                  Você não possui moedas!
-                </Text>
-              </View>
-            ) : (
-              <View
-                style={{
-                  alignItems: "center",
-                  alignContent: "center",
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  paddingBottom: 10,
-                  paddingTop: 10,
-                }}
-              >
-                <Text
-                  style={[styles.convertedValueText, { paddingBottom: 12 }]}
+    <AutocompleteDropdownContextProvider>
+      <View style={styles.container}>
+        <PrimaryHeader title="Movimentações" />
+        <View>
+          {UserSession.loggedUser!.username == "" ? (
+            <View
+              style={{
+                height: 200,
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <NoUserNameBox />
+            </View>
+          ) : isPortfolioLoading ? (
+            <View
+              style={{
+                height: 200,
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <PrimaryLoader />
+            </View>
+          ) : (
+            <ScrollView>
+              {UserSession.loggedUser?.portifolio.length == 0 ? (
+                <View
+                  style={{
+                    height: 200,
+                    alignContent: "center",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
-                  Enviar para:
-                </Text>
-                <PrimaryTextField
-                  placeholder="Digite o usuário:"
-                  onChangeText={handleUsernameChange}
-                  style={styles.inputField}
-                  containerStyle={{ width: 350 }}
-                  value={usernameToSend}
-                />
-                {selectedCurrencyFrom !== undefined ? (
-                  <DropDown
-                    selectedCurrency={selectedCurrencyFrom}
-                    onCurrencyChange={handleCurrencyChangeFrom}
-                    labelText="Selecione a moeda:"
-                    currencies={myCurrencies}
-                  />
-                ) : (
-                  <Text style={styles.loadingText}>Carregando...</Text>
-                )}
-                {selectedCurrencyFrom !== undefined ? (
-                  <View style={{ marginVertical: 7 }}>
-                    <Text
-                      style={[
-                        styles.balanceText,
-                        {
-                          paddingTop: 15,
-                          paddingBottom: 8,
-                        },
-                      ]}
-                    >
-                      Saldo: {balance} {selectedCurrencyFrom.name}
-                    </Text>
-                  </View>
-                ) : (
-                  <Text style={styles.loadingText}>Carregando...</Text>
-                )}
-                <View style={styles.inputContainer}>
-                  <Text style={styles.currencySymbol}>
-                    {selectedCurrencyFrom != undefined
-                      ? selectedCurrencyFrom!.symbol
-                      : ""}
+                  <Text style={styles.convertedValueText}>
+                    Você não possui moedas!
                   </Text>
-                  <PrimaryTextField
-                    placeholder="Valor a Enviar"
-                    onChangeText={handleMoneyChange}
-                    keyboardType="numeric"
-                    style={styles.inputField}
-                    value={moneyToSend}
-                  />
                 </View>
-                <View style={{ width: 350, paddingBottom: 10 }}>
-                  <PrimaryButton
-                    disabled={
-                      !(isMoneyToSendNotEmpty && isUsernameNotEmpty) ||
-                      isButtonloading
-                    }
-                    title="Enviar"
-                    onPress={() => {
-                      sendMoney();
-                    }}
+              ) : (
+                <View
+                  style={{
+                    alignItems: "center",
+                    alignContent: "center",
+                    alignSelf: "center",
+                    justifyContent: "center",
+                    paddingBottom: 10,
+                    paddingTop: 10,
+                  }}
+                >
+                  <SearchUsernameDropdown
+                    labelText="Enviar para:"
+                    onUsernameSelect={handleUsernameChange}
                   />
+                  {selectedCurrencyFrom !== undefined ? (
+                    <DropDown
+                      selectedCurrency={selectedCurrencyFrom}
+                      onCurrencyChange={handleCurrencyChangeFrom}
+                      labelText="Selecione a moeda:"
+                      currencies={myCurrencies}
+                    />
+                  ) : (
+                    <Text style={styles.loadingText}>Carregando...</Text>
+                  )}
+                  {selectedCurrencyFrom !== undefined ? (
+                    <View style={{ marginVertical: 7 }}>
+                      <Text
+                        style={[
+                          styles.balanceText,
+                          {
+                            paddingTop: 15,
+                            paddingBottom: 8,
+                          },
+                        ]}
+                      >
+                        Saldo: {balance} {selectedCurrencyFrom.name}
+                      </Text>
+                    </View>
+                  ) : (
+                    <Text style={styles.loadingText}>Carregando...</Text>
+                  )}
+                  <View style={styles.inputContainer}>
+                    <Text style={styles.currencySymbol}>
+                      {selectedCurrencyFrom != undefined
+                        ? selectedCurrencyFrom!.symbol
+                        : ""}
+                    </Text>
+                    <PrimaryTextField
+                      placeholder="Valor a Enviar"
+                      onChangeText={handleMoneyChange}
+                      keyboardType="numeric"
+                      style={styles.inputField}
+                      value={moneyToSend}
+                    />
+                  </View>
+                  <View style={{ width: 350, paddingBottom: 10 }}>
+                    <PrimaryButton
+                      disabled={
+                        !(isMoneyToSendNotEmpty && isUsernameNotEmpty) ||
+                        isButtonloading
+                      }
+                      title="Enviar"
+                      onPress={() => {
+                        sendMoney();
+                      }}
+                    />
+                  </View>
                 </View>
-              </View>
-            )}
+              )}
+            </ScrollView>
+          )}
+        </View>
+        <View style={styles.bottomContainer}>
+          <ScrollView
+            keyboardDismissMode="none"
+            style={styles.transactionContainerScrollView}
+            contentContainerStyle={{
+              paddingBottom: tabBarHeight + UIScale.insets.bottom,
+            }}
+          >
+            {transactions.map((transaction, index) => (
+              <TransactionContainer
+                key={index}
+                currencyCode={transaction.currencyCode}
+                personInteractionName={transaction.personInteractionName}
+                wasSended={transaction.wasSended}
+                amount={transaction.amount}
+              />
+            ))}
           </ScrollView>
-        )}
+        </View>
       </View>
-      <View style={styles.bottomContainer}>
-        <ScrollView
-          keyboardDismissMode="none"
-          style={styles.transactionContainerScrollView}
-          contentContainerStyle={{
-            paddingBottom: tabBarHeight + UIScale.insets.bottom,
-          }}
-        >
-          {transactions.map((transaction, index) => (
-            <TransactionContainer
-              key={index}
-              currencyCode={transaction.currencyCode}
-              personInteractionName={transaction.personInteractionName}
-              wasSended={transaction.wasSended}
-              amount={transaction.amount}
-            />
-          ))}
-        </ScrollView>
-      </View>
-    </View>
+    </AutocompleteDropdownContextProvider>
   );
 };
 
